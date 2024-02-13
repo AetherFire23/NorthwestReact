@@ -1,0 +1,72 @@
+import styled from 'styled-components'
+import { ExitButtonDiv } from '../Inventory'
+import { MenuSelections } from '../Bar';
+import { useState } from 'react';
+import ChatTextContainer from './ChatTextContainer';
+const ChatContainerDiv = styled.div`
+    background-color: black;
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 99;
+`
+const ChatInput = styled.input`
+    background-color: aliceblue;
+    position: absolute;
+    left: 35%;
+    top: 85%;
+    width: 55%;
+    height: 10%;
+`
+const GroupPanelDiv = styled.div`
+    background-color: aliceblue;
+    position: absolute;
+    left: 15%;
+    top: 75%;
+    width: 55%;
+    height: 20%;
+`
+
+interface IChatProps {
+    selectedMenu: MenuSelections;
+    closeMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    setSelectedMenu: React.Dispatch<React.SetStateAction<MenuSelections>>;
+}
+
+function Chat({ selectedMenu, closeMenu, setSelectedMenu }: IChatProps) {
+    const [isInvitePanelOpen, setIsInvitePanelOpen] = useState(false)
+    const isChatOpen = selectedMenu === 'chat'
+    return (
+        <div>
+            {isInvitePanelOpen && (
+                <div>
+
+                </div>
+            )}
+            {isChatOpen && (
+                <ChatContainerDiv>
+                    <div style={{
+                        backgroundColor: "white",
+                        position: "absolute",
+                        width: "10%",
+                        height: "5%",
+                        marginLeft: "2%",
+                        marginTop: "5%",
+                    }} />
+                    <ChatTextContainer>
+                    </ChatTextContainer>
+                    <ChatInput>
+
+                    </ChatInput>
+                    <ExitButtonDiv onClick={closeMenu}>
+                        X
+                    </ExitButtonDiv>
+                </ChatContainerDiv>
+            )}
+        </div>
+    )
+}
+
+export default Chat

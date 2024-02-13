@@ -82,16 +82,18 @@ export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps
     const isMenuOpen = selectedMenu === "tasks";
     const [selectedTask, setSelectedTask] = useState("stupidTask")
     const [isPrompting, setIsPrompting] = useState(false)
-    const [targetSelections, setTargetSelections] = useState<string[]>([])
     const [submittedSelections, setSubmittedSelections] = useState<string[][]>()
 
-    function addSelections(selections: string[]) {
-
+    function submitSelections(selections: string[]) {
+        const updatedSubmissions = [...submittedSelections!, selections]
+        setSubmittedSelections(updatedSubmissions)
     }
     return (
         <div>
             {isPrompting && (
-                <TargetSelectionScreen taskInfo={myDictionary[selectedTask]}>
+                <TargetSelectionScreen
+                    submitSelections={submitSelections}   
+                    taskInfo={taskInfoMap[selectedTask]}>
 
                 </TargetSelectionScreen>
             )}
@@ -121,7 +123,7 @@ export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps
                         </RequirementsLabel>
                         <RequirementsPanelDiv>
                             <ul style={{ margin: "0", padding: "0" }}>
-                                {myDictionary[selectedTask].requirements.map(t => (
+                                {taskInfoMap[selectedTask].requirements.map(t => (
                                     <li>
                                         <div>
                                             {t}
@@ -135,7 +137,7 @@ export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps
                         </EffectsLabel>
                         <EffectsPanelDiv>
                             <ul style={{ margin: "0", padding: "0" }}>
-                                {myDictionary[selectedTask].effects.map(t => (
+                                {taskInfoMap[selectedTask].effects.map(t => (
                                     <li>
                                         <div>
                                             {t}
@@ -179,7 +181,7 @@ const stupidTaskInfo: ITaskInfo = {
     effects: ["test"],
     targetSteps: [stupidTaskTargetsInfo],
 }
-const myDictionary: { [key: string]: ITaskInfo } = {
+const taskInfoMap: { [key: string]: ITaskInfo } = {
     "stupidTask": stupidTaskInfo,
 };
 

@@ -13,11 +13,17 @@ const TargetSelectionDiv = styled.div`
 `
 interface ITargetSelectionProps {
     taskInfo: ITaskInfo,
+    submitSelections: (arg: string[]) => void
 }
 export default function TargetSelectionScreen({ taskInfo }: ITargetSelectionProps) {
-    const [currentTargetStep, setCurrentTargetStep] = useState(0);
-    const selectedStep = taskInfo.targetSteps![currentTargetStep]
+    const [currentTargetStepIndex, setCurrentTargetStep] = useState(0);
+    const selectedStep = taskInfo.targetSteps![currentTargetStepIndex]
     const { checkSelection, isSelected, reset, uncheckSelection, selections } = useSelections<string>(selectedStep.targets, (x, y) => x === y)
+
+    function handleNextStep() {
+        const hasNextStep = currentTargetStepIndex + 1 === taskInfo.targetSteps?.length
+        setCurrentTargetStep(currentTargetStepIndex + 1)
+    }
     return (
         <>
             {taskInfo.hasTarget && (
@@ -32,6 +38,7 @@ export default function TargetSelectionScreen({ taskInfo }: ITargetSelectionProp
                             </li>
                         ))}
                     </ul>
+                    <button> submitTasks </button>
                 </TargetSelectionDiv>
             )}
         </>

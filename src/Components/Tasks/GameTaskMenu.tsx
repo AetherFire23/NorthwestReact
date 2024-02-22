@@ -1,10 +1,11 @@
 import styled from "styled-components"
 import { MenuSelections } from "../Bar";
-import { ExitButtonDiv } from "../Inventory";
+import { ExitButtonDiv } from "../Inventory/Inventory";
 import { useState } from "react";
 import { ITargetScreenInfo } from "./TargetSelectionScreen";
 import TargetSelectionScreen from './TargetSelectionScreen';
 import { useSelections } from "../../Hooks/useSelections";
+import { isEmpty } from "../../Utils/ListExtensions";
 
 const GameTasksMenuDiv = styled.div`
     background-color: black;
@@ -22,7 +23,6 @@ const AvailableTasksListDiv = styled.div`
     height: 85%;
     left: 5%;
     top: 10%;
-
 `
 const TaskInfosDiv = styled.div`
     background-color: aliceblue;
@@ -79,28 +79,44 @@ interface IGameTaskProps {
     closeMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps) {
+    console.log(taskInfoMap)
     const isMenuOpen = selectedMenu === "tasks";
     const [selectedTask, setSelectedTask] = useState("stupidTask")
     const [isPrompting, setIsPrompting] = useState(false)
-    const [submittedSelections, setSubmittedSelections] = useState<string[][]>()
 
-    function submitSelections(selections: string[]) {
+    // each inner array represents a STEP - a list of possible selections with a certain type (ex. room, item, player)
+    const [submittedSelections, setSubmittedSelections] = useState<string[][]>([])
+    function addSelections(selections: string[]) {
         const updatedSubmissions = [...submittedSelections!, selections]
         setSubmittedSelections(updatedSubmissions)
+    }
+
+    function submitTask() {
+        console.log("Submit task completely")
+        setIsPrompting(false)
+    }
+
+    function executeTaskOrStartPrompting() {
+        if (!taskInfoMap[selectedTask].hasTarget) {
+            console.log("execute task completely")
+        }
+        else {
+            console.log("start prompting user")
+            setIsPrompting(true)
+        }
     }
     return (
         <div>
             {isPrompting && (
                 <TargetSelectionScreen
-                    submitSelections={submitSelections}   
+                    submitTask={submitTask}
+                    submitSelections={addSelections}
                     taskInfo={taskInfoMap[selectedTask]}>
-
                 </TargetSelectionScreen>
             )}
-
             {(isMenuOpen && !isPrompting) && (
                 <GameTasksMenuDiv>
-                    <div onClick={e => setIsPrompting(true)} style={{ position: "absolute", backgroundColor: "white", width: "5rem", height: "2rem", left: "1rem", top: "1rem" }}>
+                    <div onClick={executeTaskOrStartPrompting} style={{ position: "absolute", backgroundColor: "white", width: "5rem", height: "2rem", left: "1rem", top: "1rem" }}>
 
                     </div>
                     <ExitButtonDiv onClick={closeMenu}>
@@ -168,6 +184,12 @@ export interface ITaskInfo {
     effects: string[],
     targetSteps?: ITargetScreenInfo[]
 }
+const stupidTaskTargetsInfo2: ITargetScreenInfo = {
+    minimumTargetsAmount: 1,
+    maximumTargetsAmount: 3,
+    targets: ["second screen !"],
+    targetType: "room",
+}
 const stupidTaskTargetsInfo: ITargetScreenInfo = {
     minimumTargetsAmount: 1,
     maximumTargetsAmount: 3,
@@ -179,10 +201,18 @@ const stupidTaskInfo: ITaskInfo = {
     hasTarget: true,
     requirements: ["test"],
     effects: ["test"],
-    targetSteps: [stupidTaskTargetsInfo],
+    targetSteps: [stupidTaskTargetsInfo, stupidTaskTargetsInfo2],
+}
+
+const stupidTaskInfo2: ITaskInfo = {
+    hasTarget: true,
+    requirements: ["test", "requirement2"],
+    effects: ["test", "test2"],
+    targetSteps: [stupidTaskTargetsInfo, stupidTaskTargetsInfo2],
 }
 const taskInfoMap: { [key: string]: ITaskInfo } = {
     "stupidTask": stupidTaskInfo,
+    "stupidTask2": stupidTaskInfo2,
 };
 
 
@@ -192,4 +222,4 @@ const taskInfoMap: { [key: string]: ITaskInfo } = {
 // and I check if the current selection is inside the allowed permutations ?
 // I am probably in the YAGNI space here.
 // All I know is that im gonna need a target of X type
-// and X amount of selections. 
+// and X amount of selections.

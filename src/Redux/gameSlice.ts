@@ -34,8 +34,8 @@ export const counterSlice = createSlice({
 export const { updateLocalPlayer, updateCamera } = counterSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
-export const selectGame = (state: RootState) => state.gameSlice
-export const selectLocalPlayer = (state: RootState) => state.gameSlice.localPlayer
-export const selectCamera = (state: RootState) => state.gameSlice.cameraPosition
+export const selectGame = (state: RootState) => state.game
+export const selectLocalPlayer = (state: RootState) => state.game.localPlayer
+export const selectCamera = (state: RootState) => state.game.cameraPosition
 
 export default counterSlice.reducer

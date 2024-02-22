@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { ExitButtonDiv } from '../Inventory'
+import { ExitButtonDiv } from '../Inventory/Inventory'
 import { MenuSelections } from '../Bar';
 import { useState } from 'react';
 import ChatTextContainer from './ChatTextContainer';
+
 const ChatContainerDiv = styled.div`
     background-color: black;
     position: absolute;
@@ -28,6 +29,14 @@ const GroupPanelDiv = styled.div`
     width: 55%;
     height: 20%;
 `
+const ConfirmChatMessageDiv = styled.button`
+    background-color: aliceblue;
+    position: absolute;
+    left: 91%;
+    top: 85%;
+    width: 5%;
+    height: 10%;
+`
 
 interface IChatProps {
     selectedMenu: MenuSelections;
@@ -36,15 +45,17 @@ interface IChatProps {
 }
 
 function Chat({ selectedMenu, closeMenu, setSelectedMenu }: IChatProps) {
-    const [isInvitePanelOpen, setIsInvitePanelOpen] = useState(false)
+    const [textInput, setTextInput] = useState("")
+    const [chatMessages, setChatMessages] = useState(dummyText)
     const isChatOpen = selectedMenu === 'chat'
+    const controlChatMessage = (e: React.ChangeEvent<HTMLInputElement>) => { setTextInput(e.target.value) }
+
+    function submitChatMessage() {
+        setTextInput("")
+        setChatMessages([...chatMessages, textInput])
+    }
     return (
         <div>
-            {isInvitePanelOpen && (
-                <div>
-
-                </div>
-            )}
             {isChatOpen && (
                 <ChatContainerDiv>
                     <div style={{
@@ -55,11 +66,11 @@ function Chat({ selectedMenu, closeMenu, setSelectedMenu }: IChatProps) {
                         marginLeft: "2%",
                         marginTop: "5%",
                     }} />
-                    <ChatTextContainer>
+                    <ChatTextContainer text={chatMessages}>
                     </ChatTextContainer>
-                    <ChatInput>
-
+                    <ChatInput value={textInput} onChange={controlChatMessage}>
                     </ChatInput>
+                    <ConfirmChatMessageDiv onClick={submitChatMessage}></ConfirmChatMessageDiv>
                     <ExitButtonDiv onClick={closeMenu}>
                         X
                     </ExitButtonDiv>
@@ -70,3 +81,39 @@ function Chat({ selectedMenu, closeMenu, setSelectedMenu }: IChatProps) {
 }
 
 export default Chat
+
+const dummyText = [
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "ssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "ssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+    "sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+]

@@ -13,16 +13,32 @@ const TargetSelectionDiv = styled.div`
 `
 interface ITargetSelectionProps {
     taskInfo: ITaskInfo,
-    submitSelections: (arg: string[]) => void
+    submitSelections: (arg: string[]) => void,
+    submitTask: () => void,
 }
-export default function TargetSelectionScreen({ taskInfo }: ITargetSelectionProps) {
+export default function TargetSelectionScreen({ taskInfo, submitSelections: addSelections, submitTask }: ITargetSelectionProps) {
     const [currentTargetStepIndex, setCurrentTargetStep] = useState(0);
     const selectedStep = taskInfo.targetSteps![currentTargetStepIndex]
-    const { checkSelection, isSelected, reset, uncheckSelection, selections } = useSelections<string>(selectedStep.targets, (x, y) => x === y)
 
-    function handleNextStep() {
-        const hasNextStep = currentTargetStepIndex + 1 === taskInfo.targetSteps?.length
-        setCurrentTargetStep(currentTargetStepIndex + 1)
+    // with a new default type because React wont update to the next state. 
+    const { checkSelection, isSelected, reset, uncheckSelection, selections } = useSelections<string>(selectedStep.targets, (x, y) => x === y)
+    const addCurrentSelections = () => addSelections(selections)
+    const incrementCurrentTargetStep = () => setCurrentTargetStep(currentTargetStepIndex +1)
+    const isLastStep = () => currentTargetStepIndex !== taskInfo.targetSteps!.length - 1
+    function submitCurrentSelectionsAndAvanceToNextStep() {
+        // advance to next checklist index
+        incrementCurrentTargetStep()
+        addCurrentSelections()
+        reset();
+    }
+    function handleNextStepOrSubmit() {
+        if (isLastStep()) {
+            submitCurrentSelectionsAndAvanceToNextStep()
+        }
+        else {
+            addCurrentSelections()
+            submitTask()
+        }
     }
     return (
         <>
@@ -38,7 +54,7 @@ export default function TargetSelectionScreen({ taskInfo }: ITargetSelectionProp
                             </li>
                         ))}
                     </ul>
-                    <button> submitTasks </button>
+                    <button onClick={handleNextStepOrSubmit}> submitTasks </button>
                 </TargetSelectionDiv>
             )}
         </>

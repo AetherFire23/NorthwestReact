@@ -1,5 +1,8 @@
 import styled from "styled-components"
-import { MenuSelections } from "./Bar"
+import { MenuSelections } from "../Bar"
+import Item from "./Item"
+import { useState } from "react"
+import { removeSingle } from "../../Utils/ListExtensions"
 
 const InventoryScreenContainer = styled.div`
 background-color: black;
@@ -14,7 +17,7 @@ background-color: black;
 const InventoryItemsContainer = styled.ul<{ $left: number }>`
     background-color: aliceblue;
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(2, 3);
     grid-auto-flow: dense;
     width:  30%;
     height: 83%;
@@ -27,14 +30,6 @@ const InventoryItemsContainer = styled.ul<{ $left: number }>`
     padding-left: 0;
     margin-left: 0;
     user-select: none;
-`
-
-const Item = styled.div`
-    background-color: black;
-    width: 75%;
-    height: 4rem;
-    margin-left: 1rem;
-    margin-top: 1rem;
 `
 
 export const ExitButtonDiv = styled.div`
@@ -51,9 +46,9 @@ interface InventoryProps {
     closeMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
-const NameLabel = styled.div<{$left: number}>`
+const NameLabel = styled.div<{ $left: number }>`
     position: absolute;
-    left: ${({$left}) => $left}%;
+    left: ${({ $left }) => $left}%;
     top: 1%;
     font-size: larger;
     color: aliceblue;
@@ -61,6 +56,22 @@ const NameLabel = styled.div<{$left: number}>`
 
 function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
     const isInventory = selectedMenu === "inventory"
+    const [playerOneItems, setPlayer1Items] = useState(defaultPlayer1Items)
+    const [roomsItems, setRoomItems] = useState(defaultRoomItems)
+
+    function swapItems(item: IItem, isPlayerItem: boolean) {
+        if (isPlayerItem) {
+            setRoomItems([...roomsItems, item])
+            const updatedPlayerItems = removeSingle(playerOneItems, x => x.id === item.id)
+            setPlayer1Items(updatedPlayerItems)
+        }
+        else {
+            setPlayer1Items([...playerOneItems, item])
+            const updatedRoomItems = removeSingle(roomsItems, x => x.id === item.id)
+            setRoomItems(updatedRoomItems)
+        }
+    }
+
     return (
         <div>
             {isInventory && (
@@ -74,18 +85,20 @@ function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
                     <ExitButtonDiv onClick={closeMenu}>
                         <label> X </label>
                     </ExitButtonDiv>
+
+                    {/* Player items */}
                     <InventoryItemsContainer $left={5}>
-                        {defaultItems.map((_, i) => (
+                        {playerOneItems.map((x, i) => (
                             <li key={i}>
-                                <Item />
+                                <Item onClick={() => swapItems(x, true)} item={x} />
                             </li>
                         ))}
-
+                        {/* Room items */}
                     </InventoryItemsContainer>
                     <InventoryItemsContainer $left={55}>
-                        {defaultItems.map((_, i) => (
+                        {roomsItems.map((x, i) => (
                             <li key={i}>
-                                <Item />
+                                <Item onClick={() => swapItems(x, false)} item={x} />
                             </li>
                         ))}
                     </InventoryItemsContainer>
@@ -97,41 +110,22 @@ function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
 
 export default Inventory
 
-const defaultItems = [
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-    "test",
-    "test2",
-    "test3",
-]
+
+export interface IItem {
+    id: string,
+    name: string,
+}
+// Define the default items
+const defaultPlayer1Items: IItem[] = [
+    { id: crypto.randomUUID(), name: "item1" },
+    { id: crypto.randomUUID(), name: "Item2" },
+    { id: crypto.randomUUID(), name: "item1" },
+    { id: crypto.randomUUID(), name: "Item2" },
+    { id: crypto.randomUUID(), name: "item1" },
+    { id: crypto.randomUUID(), name: "Item2" },
+];
+
+const defaultRoomItems: IItem[] = [
+    { id: crypto.randomUUID(), name: "test" },
+    { id: crypto.randomUUID(), name: "test" },
+];

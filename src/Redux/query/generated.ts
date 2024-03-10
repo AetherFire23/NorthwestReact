@@ -41,60 +41,60 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getGamecontrollerGameState: build.query<
-      GetGamecontrollerGameStateApiResponse,
-      GetGamecontrollerGameStateApiArg
+    getGameGetGameState: build.query<
+      GetGameGetGameStateApiResponse,
+      GetGameGetGameStateApiArg
     >({
       query: (queryArg) => ({
-        url: `/gamecontroller/GameState`,
+        url: `/game/GetGameState`,
         params: {
           playerId: queryArg.playerId,
           lastTimeStamp: queryArg.lastTimeStamp,
         },
       }),
     }),
-    putGamecontrollerExecuteGameTask: build.mutation<
-      PutGamecontrollerExecuteGameTaskApiResponse,
-      PutGamecontrollerExecuteGameTaskApiArg
+    putGameExecuteTask: build.mutation<
+      PutGameExecuteTaskApiResponse,
+      PutGameExecuteTaskApiArg
     >({
       query: (queryArg) => ({
-        url: `/gamecontroller/ExecuteGameTask`,
+        url: `/game/executeTask`,
         method: "PUT",
         body: queryArg.body,
         params: { playerId: queryArg.playerId, taskCode: queryArg.taskCode },
       }),
     }),
-    putGamecontrollerUpdatePlayerPosition: build.mutation<
-      PutGamecontrollerUpdatePlayerPositionApiResponse,
-      PutGamecontrollerUpdatePlayerPositionApiArg
+    putGameUpdateplayerposition: build.mutation<
+      PutGameUpdateplayerpositionApiResponse,
+      PutGameUpdateplayerpositionApiArg
     >({
       query: (queryArg) => ({
-        url: `/gamecontroller/UpdatePlayerPosition`,
+        url: `/game/updateplayerposition`,
         method: "PUT",
         params: { playerId: queryArg.playerId, x: queryArg.x, y: queryArg.y },
       }),
     }),
-    putGamecontrollerTransferItem: build.mutation<
-      PutGamecontrollerTransferItemApiResponse,
-      PutGamecontrollerTransferItemApiArg
+    putGameTransferitem: build.mutation<
+      PutGameTransferitemApiResponse,
+      PutGameTransferitemApiArg
     >({
       query: (queryArg) => ({
-        url: `/gamecontroller/TransferItem`,
+        url: `/game/transferitem`,
         method: "PUT",
         params: {
           targetId: queryArg.targetId,
-          ownerId: queryArg.ownerId,
+          itemOwnerId: queryArg.itemOwnerId,
           itemId: queryArg.itemId,
           gameId: queryArg.gameId,
         },
       }),
     }),
-    putGamecontrollerChangeRoom: build.mutation<
-      PutGamecontrollerChangeRoomApiResponse,
-      PutGamecontrollerChangeRoomApiArg
+    putGameChangeroom: build.mutation<
+      PutGameChangeroomApiResponse,
+      PutGameChangeroomApiArg
     >({
       query: (queryArg) => ({
-        url: `/gamecontroller/ChangeRoom`,
+        url: `/game/changeroom`,
         method: "PUT",
         params: {
           playerId: queryArg.playerId,
@@ -111,12 +111,12 @@ const injectedRtkApi = api.injectEndpoints({
         params: { userId: queryArg.userId },
       }),
     }),
-    postMainmenuCreateLobby: build.mutation<
-      PostMainmenuCreateLobbyApiResponse,
-      PostMainmenuCreateLobbyApiArg
+    postMainmenuCreatelobby: build.mutation<
+      PostMainmenuCreatelobbyApiResponse,
+      PostMainmenuCreatelobbyApiArg
     >({
       query: (queryArg) => ({
-        url: `/mainmenu/CreateLobby`,
+        url: `/mainmenu/createlobby`,
         method: "POST",
         params: { userId: queryArg.userId },
       }),
@@ -146,7 +146,7 @@ const injectedRtkApi = api.injectEndpoints({
       PostUsersLoginApiArg
     >({
       query: (queryArg) => ({
-        url: `/users/Login`,
+        url: `/users/login`,
         method: "POST",
         body: queryArg.body,
       }),
@@ -156,7 +156,7 @@ const injectedRtkApi = api.injectEndpoints({
       PostUsersRegisterApiArg
     >({
       query: (queryArg) => ({
-        url: `/users/Register`,
+        url: `/users/register`,
         method: "POST",
         body: queryArg.body,
       }),
@@ -184,33 +184,33 @@ export type PutChatPutNewMessageToServerApiArg = {
   roomId?: string;
   receivedMessage?: string;
 };
-export type GetGamecontrollerGameStateApiResponse =
+export type GetGameGetGameStateApiResponse =
   /** status 200 Success */ GameStateRead;
-export type GetGamecontrollerGameStateApiArg = {
+export type GetGameGetGameStateApiArg = {
   playerId?: string;
   lastTimeStamp?: string;
 };
-export type PutGamecontrollerExecuteGameTaskApiResponse = unknown;
-export type PutGamecontrollerExecuteGameTaskApiArg = {
+export type PutGameExecuteTaskApiResponse = unknown;
+export type PutGameExecuteTaskApiArg = {
   playerId?: string;
   taskCode?: GameTaskCodes;
-  body: StringStringTuple[];
+  body: GameTaskTargetInfo[][];
 };
-export type PutGamecontrollerUpdatePlayerPositionApiResponse = unknown;
-export type PutGamecontrollerUpdatePlayerPositionApiArg = {
+export type PutGameUpdateplayerpositionApiResponse = unknown;
+export type PutGameUpdateplayerpositionApiArg = {
   playerId?: string;
   x?: number;
   y?: number;
 };
-export type PutGamecontrollerTransferItemApiResponse = unknown;
-export type PutGamecontrollerTransferItemApiArg = {
+export type PutGameTransferitemApiResponse = unknown;
+export type PutGameTransferitemApiArg = {
   targetId?: string;
-  ownerId?: string;
+  itemOwnerId?: string;
   itemId?: string;
   gameId?: string;
 };
-export type PutGamecontrollerChangeRoomApiResponse = unknown;
-export type PutGamecontrollerChangeRoomApiArg = {
+export type PutGameChangeroomApiResponse = unknown;
+export type PutGameChangeroomApiArg = {
   playerId?: string;
   targetRoomName?: string;
 };
@@ -219,9 +219,9 @@ export type GetMainmenuGetMainMenuStateApiResponse =
 export type GetMainmenuGetMainMenuStateApiArg = {
   userId?: string;
 };
-export type PostMainmenuCreateLobbyApiResponse =
+export type PostMainmenuCreatelobbyApiResponse =
   /** status 200 Success */ LobbyRead;
-export type PostMainmenuCreateLobbyApiArg = {
+export type PostMainmenuCreatelobbyApiArg = {
   userId?: string;
 };
 export type PostMainmenuJoinLobbyApiResponse = unknown;
@@ -243,21 +243,21 @@ export type PostUsersRegisterApiArg = {
 };
 export type GetUsersTestApiResponse = unknown;
 export type GetUsersTestApiArg = void;
-export type RoleType = 0 | 1 | 2 | 3 | 4;
-export type ItemType = 0 | 1;
+export type RoleType = "Commander" | "Medic" | "Sailor" | "Cook" | "Engineer";
+export type ItemType = "Wrench" | "Hose";
 export type Item = {
-  id?: string;
   ownerId?: string;
   itemType?: ItemType;
+  id: string;
 };
-export type SkillEnum = 0 | 1 | 2;
+export type SkillEnum = "CookBonus" | "AttackBonus" | "ShootLaser";
 export type PlayerDto = {
   id?: string;
   gameId?: string;
   userId?: string;
   currentGameRoomId?: string;
   profession?: RoleType;
-  items?: Item[] | null;
+  items: Item[];
   skills?: SkillEnum[] | null;
   name?: string | null;
   x?: number;
@@ -274,7 +274,7 @@ export type Message = {
   roomId?: string;
   created?: string | null;
 };
-export type RoleName = 0 | 1 | 2;
+export type RoleName = "PereNoel" | "Standard" | "Undefined";
 export type Role = {
   id?: string;
   roleName?: RoleName;
@@ -309,14 +309,14 @@ export type UserLobby = {
   user?: User | null;
   lobbyId?: string;
   lobby?: Lobby | null;
-  id?: string;
+  id: string;
 };
 export type UserLobbyRead = {
   userId?: string;
   user?: User | null;
   lobbyId?: string;
   lobby?: LobbyRead | null;
-  id?: string;
+  id: string;
 };
 export type User = {
   id?: string;
@@ -333,12 +333,6 @@ export type Game = {
   isActive?: boolean;
   playersInGame: Player[] | null;
 };
-export type GameRead = {
-  id?: string;
-  nextTick?: string;
-  isActive?: boolean;
-  playersInGame: Player[] | null;
-};
 export type UserRead = {
   id?: string;
   name?: string | null;
@@ -348,7 +342,7 @@ export type UserRead = {
   userRoles?: UserRoleRead[] | null;
   userLobbies?: UserLobbyRead[] | null;
   lobbies?: LobbyRead[] | null;
-  games?: GameRead[] | null;
+  games?: Game[] | null;
 };
 export type Player = {
   id?: string;
@@ -365,12 +359,7 @@ export type Player = {
   gameId?: string;
   game?: Game | null;
 };
-export type StringStringValueTuple = {
-  item1?: string | null;
-  item2?: string | null;
-};
 export type PlayerRead = {
-  taskParam?: StringStringValueTuple;
   id?: string;
   currentGameRoomId?: string;
   profession?: RoleType;
@@ -383,7 +372,7 @@ export type PlayerRead = {
   userId?: string;
   user?: UserRead | null;
   gameId?: string;
-  game?: GameRead | null;
+  game?: Game | null;
 };
 export type PrivateChatRoomParticipant = {
   id?: string;
@@ -400,7 +389,7 @@ export type Log = {
   created?: string | null;
   createdBy?: string | null;
 };
-export type RoomType = 0 | 1;
+export type RoomType = "Start" | "Second";
 export type Station = {
   id?: string;
   gameId?: string;
@@ -410,99 +399,124 @@ export type Station = {
   isActive?: boolean;
   roomName?: string | null;
 };
-export type StationRead = {
-  taskParam?: StringStringValueTuple;
-  id?: string;
-  gameId?: string;
-  name?: string | null;
-  serializedProperties?: string | null;
-  isLandmass?: boolean;
-  isActive?: boolean;
-  roomName?: string | null;
-};
 export type RoomDto = {
-  id?: string;
   gameId?: string;
   name?: string | null;
-  items?: Item[] | null;
+  items: Item[];
   players?: Player[] | null;
   roomType?: RoomType;
   stations?: Station[] | null;
   isLandmass?: boolean;
   x?: number;
   y?: number;
+  id: string;
+};
+export type StringStringValueTuple = {
+  item1?: string | null;
+  item2?: string | null;
 };
 export type RoomDtoRead = {
   taskParam?: StringStringValueTuple;
-  id?: string;
   gameId?: string;
   name?: string | null;
-  items?: Item[] | null;
+  items: Item[];
   players?: PlayerRead[] | null;
   roomType?: RoomType;
-  stations?: StationRead[] | null;
+  stations?: Station[] | null;
   isLandmass?: boolean;
   x?: number;
   y?: number;
+  id: string;
 };
 export type PrivateChatRoom = {
   id?: string;
   chatRoomName?: string | null;
 };
+export type GameTaskCodes =
+  | "ChargeCannon"
+  | "FireCannon"
+  | "RepairCannon"
+  | "RaiseSail"
+  | "LowerSail"
+  | "SetSail"
+  | "RepairSail"
+  | "Watch"
+  | "ChargeMortar"
+  | "FireMortar"
+  | "RepairMortar"
+  | "Expedition"
+  | "Evacuation"
+  | "Fish"
+  | "Fire"
+  | "RaiseAnchor"
+  | "LowererAnchor"
+  | "CookMeat"
+  | "CookFish"
+  | "CookStew"
+  | "Lock"
+  | "Unlock"
+  | "CraftTask"
+  | "InvalidTestTask"
+  | "TestTaskInvisible"
+  | "TestTaskNoTargets"
+  | "TestTaskWithTargets";
+export type TaskRequirement = {
+  description?: string | null;
+  fulfillsRequirement?: boolean;
+};
+export type GameTaskTargetInfo = {
+  id?: string;
+  appearanceName?: string | null;
+  name?: string | null;
+};
+export type GameTaskPromptInfo = {
+  promptText?: string | null;
+  hasTarget?: boolean;
+  taskTargets: GameTaskTargetInfo[];
+  maximumTargets?: number;
+  minimumTargets?: number;
+};
+export type GameTaskAvailabilityResult = {
+  gameTaskName: string;
+  gameTaskCode: GameTaskCodes;
+  requirements: TaskRequirement[];
+  taskPromptInfos: GameTaskPromptInfo[];
+};
+export type GameTaskAvailabilityResultRead = {
+  gameTaskName: string;
+  gameTaskCode: GameTaskCodes;
+  requirements: TaskRequirement[];
+  taskPromptInfos: GameTaskPromptInfo[];
+  canExecuteTask?: boolean;
+};
 export type GameState = {
-  playerDTO?: PlayerDto | null;
-  newMessages?: Message[] | null;
-  players?: Player[] | null;
-  privateChatRoomParticipants?: PrivateChatRoomParticipant[] | null;
-  logs?: Log[] | null;
-  rooms?: RoomDto[] | null;
+  playerDto: PlayerDto;
+  newMessages: Message[];
+  players: Player[];
+  privateChatRoomParticipants: PrivateChatRoomParticipant[];
+  logs: Log[];
+  rooms: RoomDto[];
   timeStamp?: string | null;
   serializedLayout?: string | null;
   privateChatRooms?: PrivateChatRoom[] | null;
   stations?: Station[] | null;
+  visibleGameTasks: GameTaskAvailabilityResult[];
 };
 export type GameStateRead = {
-  playerDTO?: PlayerDto | null;
-  localPlayerRoom?: RoomDtoRead | null;
-  newMessages?: Message[] | null;
-  players?: PlayerRead[] | null;
-  privateChatRoomParticipants?: PrivateChatRoomParticipant[] | null;
-  logs?: Log[] | null;
-  rooms?: RoomDtoRead[] | null;
+  playerDto: PlayerDto;
+  localPlayerRoom: RoomDtoRead;
+  newMessages: Message[];
+  players: PlayerRead[];
+  privateChatRoomParticipants: PrivateChatRoomParticipant[];
+  logs: Log[];
+  rooms: RoomDtoRead[];
   timeStamp?: string | null;
   serializedLayout?: string | null;
   privateChatRooms?: PrivateChatRoom[] | null;
-  stations?: StationRead[] | null;
+  stations?: Station[] | null;
+  visibleGameTasks: GameTaskAvailabilityResultRead[];
   gameId?: string;
   playerUID?: string;
-};
-export type GameTaskCodes =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | 13
-  | 14
-  | 15
-  | 16
-  | 17
-  | 18
-  | 19
-  | 20
-  | 21
-  | 22;
-export type StringStringTuple = {
-  item1?: string | null;
-  item2?: string | null;
 };
 export type LobbyDto = {
   id?: string;
@@ -565,13 +579,13 @@ export const {
   usePutChatCreateChatroomMutation,
   usePutChatLeaveChatRoomMutation,
   usePutChatPutNewMessageToServerMutation,
-  useGetGamecontrollerGameStateQuery,
-  usePutGamecontrollerExecuteGameTaskMutation,
-  usePutGamecontrollerUpdatePlayerPositionMutation,
-  usePutGamecontrollerTransferItemMutation,
-  usePutGamecontrollerChangeRoomMutation,
+  useGetGameGetGameStateQuery,
+  usePutGameExecuteTaskMutation,
+  usePutGameUpdateplayerpositionMutation,
+  usePutGameTransferitemMutation,
+  usePutGameChangeroomMutation,
   useGetMainmenuGetMainMenuStateQuery,
-  usePostMainmenuCreateLobbyMutation,
+  usePostMainmenuCreatelobbyMutation,
   usePostMainmenuJoinLobbyMutation,
   usePostMainmenuStartGameMutation,
   usePostUsersLoginMutation,

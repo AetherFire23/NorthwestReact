@@ -2,11 +2,13 @@ import {configureStore} from '@reduxjs/toolkit'
 import gameSlice from './gameSlice'
 import mainMenuSlice from "./mainMenuSlice.ts"
 import {api} from "./query/generated.ts";
+import gameStateSlice from "./gameStateSlice.ts";
 
 export const store = configureStore({
     reducer: {
         game: gameSlice, // Assuming your slice reducers have a `reducer` property
         mainMenu: mainMenuSlice,
+        gameState: gameStateSlice,
         [api.reducerPath]: api.reducer,
     },
     middleware: (getDefaultMiddleware) =>

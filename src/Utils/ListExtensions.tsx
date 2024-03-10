@@ -5,7 +5,7 @@ export function hasDuplicates<T>(array: T[]) {
 export function hasDuplicateWithComparer<T>(array: T[], equalityComparer: (arg1: T, arg2: T) => boolean) {
     let hasFoundDuplicate: boolean = false
 
-    // loop inside the function twice
+    // loop inside the array twice (to check each value_
     for (let i = 0; i < array.length; i++) {
         //if the inner loop has found a value, break
         if (hasFoundDuplicate) break;
@@ -53,6 +53,31 @@ export function removeSingle<T>(arr: Array<T>, toRemove: (arg: T) => boolean) {
     return updatedArray
 }
 
-export function addElement<T>(twelve: React.Dispatch<React.SetStateAction<T[]>>, arg: T[]) {
 
+export function removeElementById<T extends { id: string }>(arr: Array<T>, arg: T) {
+    const updatedArray = removeSingle(arr, x => x.id === arg.id)
+    return updatedArray
+}
+
+export function first<T>(arr: Array<T>, predicate: (arg: T) => boolean) {
+    const foundItem = arr.find(predicate)
+
+    if (!foundItem) {
+        throw new Error("The sequence has found no elements")
+    }
+
+    return foundItem
+}
+
+/**
+ * returns a new array containing the former array and the added elements.
+ */
+export function addRangeImmutable<T>(arr: Array<T>, arr2: Array<T>) {
+    const updatedArray = [...arr, ...arr2]
+    return updatedArray
+}
+
+export function addElementImmutable<T>(arr: Array<T>, element: T) {
+    const updatedArray = [...arr, element]
+    return updatedArray
 }

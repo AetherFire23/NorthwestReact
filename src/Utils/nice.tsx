@@ -1,6 +1,6 @@
-import { IVector, Rectangle, Vector } from "../Models/Vector";
-import { selectCamera } from "../Redux/gameSlice";
-import { useAppSelector } from "../Redux/hooks";
+import {IVector, Rectangle, Vector} from "../Models/Vector";
+import {selectCamera} from "../Redux/gameSlice";
+import {useAppSelector} from "../Redux/hooks";
 
 export function calculateDistance(x1: number, y1: number, x2: number, y2: number): number {
     const deltaX = x2 - x1;
@@ -59,6 +59,7 @@ export function getMousePosition(e: MouseEvent) {
     }
     return mp
 }
+
 export function getElementScreenPosition<T extends HTMLElement>(ref: React.RefObject<T>) {
     const boundingBox = ref.current?.getBoundingClientRect()
 
@@ -69,17 +70,19 @@ export function getElementScreenPosition<T extends HTMLElement>(ref: React.RefOb
 
     return position
 }
+
 export function getElementRectangle<T extends HTMLElement>(ref: React.RefObject<T>) {
     const boundingBox = ref.current?.getBoundingClientRect()
 
     const elementSquare: Rectangle = {
-        position: { x: boundingBox!.left, y: boundingBox!.top },
+        position: {x: boundingBox!.left, y: boundingBox!.top},
         width: boundingBox!.width,
         height: boundingBox!.height,
     }
 
     return elementSquare
 }
+
 export function calculateTranslation(vec1: IVector, vec2: IVector) {
     const translatedVector: IVector = {
         x: vec1.x - vec2.x,
@@ -88,6 +91,7 @@ export function calculateTranslation(vec1: IVector, vec2: IVector) {
 
     return translatedVector
 }
+
 export function translateX(vec1: IVector, x: number) {
     const translated: IVector = {
         x: vec1.x - x,
@@ -96,6 +100,7 @@ export function translateX(vec1: IVector, x: number) {
 
     return translated
 }
+
 export function translateY(vec1: IVector, y: number) {
     const translated: IVector = {
         x: vec1.x,
@@ -108,4 +113,15 @@ export function translateY(vec1: IVector, y: number) {
 export function isWithin(num: number, min: number, max: number) {
     const isWithinRange = num > min && num < max
     return isWithinRange
+}
+
+export function isValidObject(obj: any) {
+
+    const isFalsy = obj === null || obj === undefined
+
+    if (isFalsy) return false;
+
+    if(Object.keys(obj).length === 0) return false
+
+    return true
 }

@@ -1,11 +1,14 @@
 import styled from "styled-components"
-import { MenuSelections } from "../Bar"
+import {MenuSelections} from "../Bar"
 import Item from "./Item"
-import { useState } from "react"
-import { removeSingle } from "../../Utils/ListExtensions"
+import {useAppDispatch, useAppSelector} from "../../Redux/hooks.tsx";
+import {swapItemOptimistically} from "../../Redux/gameStateSlice.ts";
+import * as shared from "../../Redux/query/generated.ts"
+import {getSelectedRoom, isPlayerItem} from "../../Hooks/gameStateHooks.tsx";
+import {usePutGameTransferitemMutation} from "../../Redux/query/generated.ts";
 
 const InventoryScreenContainer = styled.div`
-background-color: black;
+    background-color: black;
     width: 90%;
     height: 98%;
     left: 3%;
@@ -13,16 +16,15 @@ background-color: black;
     position: absolute;
     z-index: 99;
 `
-
 const InventoryItemsContainer = styled.ul<{ $left: number }>`
     background-color: aliceblue;
     display: grid;
     grid-template-columns: repeat(2, 3);
     grid-auto-flow: dense;
-    width:  30%;
+    width: 30%;
     height: 83%;
     top: 5%;
-    left: ${({ $left }) => $left}%;
+    left: ${({$left}) => $left}%;
     padding-bottom: 1rem;
     overflow: scroll;
     position: absolute;
@@ -31,7 +33,6 @@ const InventoryItemsContainer = styled.ul<{ $left: number }>`
     margin-left: 0;
     user-select: none;
 `
-
 export const ExitButtonDiv = styled.div`
     background-color: aliceblue;
     width: 5%;
@@ -48,28 +49,36 @@ interface InventoryProps {
 
 const NameLabel = styled.div<{ $left: number }>`
     position: absolute;
-    left: ${({ $left }) => $left}%;
+    left: ${({$left}) => $left}%;
     top: 1%;
     font-size: larger;
     color: aliceblue;
 `
 
-function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
+function Inventory({selectedMenu, closeMenu}: InventoryProps) {
     const isInventory = selectedMenu === "inventory"
-    const [playerOneItems, setPlayer1Items] = useState(defaultPlayer1Items)
-    const [roomsItems, setRoomItems] = useState(defaultRoomItems)
+    const dispatch = useAppDispatch()
+    const [transferItem, transferItemRequestData] = usePutGameTransferitemMutation()
 
-    function swapItems(item: IItem, isPlayerItem: boolean) {
-        if (isPlayerItem) {
-            setRoomItems([...roomsItems, item])
-            const updatedPlayerItems = removeSingle(playerOneItems, x => x.id === item.id)
-            setPlayer1Items(updatedPlayerItems)
-        }
-        else {
-            setPlayer1Items([...playerOneItems, item])
-            const updatedRoomItems = removeSingle(roomsItems, x => x.id === item.id)
-            setRoomItems(updatedRoomItems)
-        }
+    const gameStateSlice = useAppSelector(x => x.gameState)
+    const roomItems = getSelectedRoom(gameStateSlice).items
+    const playerItems = gameStateSlice.gameState.playerDto.items
+
+    function handleSwapItem(item: shared.Item) {
+        // if player, send to room, if room, send to player
+        const targetId = isPlayerItem(gameStateSlice.gameState, item) ? gameStateSlice.gameState.localPlayerRoom.id : gameStateSlice.gameState.playerDto.id
+
+        // idea: wait for RESPONSE before updating.
+        // catch () => do nothing
+        // then() => update
+        transferItem({
+            itemId: item.id,
+            gameId: gameStateSlice.gameState.playerDto.gameId,
+            targetId: targetId,
+            ownerId: item.ownerId
+        }).unwrap().then(r => {
+            dispatch(swapItemOptimistically(item))
+        })
     }
 
     return (
@@ -77,10 +86,10 @@ function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
             {isInventory && (
                 <InventoryScreenContainer>
                     <NameLabel $left={5}>
-                        PlayerName
+                        {"name" + gameStateSlice.gameState.playerDto.name}
                     </NameLabel>
                     <NameLabel $left={55}>
-                        RoomName
+                        {getSelectedRoom(gameStateSlice).name}
                     </NameLabel>
                     <ExitButtonDiv onClick={closeMenu}>
                         <label> X </label>
@@ -88,17 +97,18 @@ function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
 
                     {/* Player items */}
                     <InventoryItemsContainer $left={5}>
-                        {playerOneItems.map((x, i) => (
-                            <li key={i}>
-                                <Item onClick={() => swapItems(x, true)} item={x} />
+                        {playerItems.map((x) => (
+                            <li key={x.id}>
+                                {/*<Item onClick={() => swapItems(x, true)} item={x}/>*/}
+                                <Item onClick={() => handleSwapItem(x)} item={x}/>
                             </li>
                         ))}
                         {/* Room items */}
                     </InventoryItemsContainer>
                     <InventoryItemsContainer $left={55}>
-                        {roomsItems.map((x, i) => (
-                            <li key={i}>
-                                <Item onClick={() => swapItems(x, false)} item={x} />
+                        {roomItems.map((x) => (
+                            <li key={x.id}>
+                                <Item onClick={() => handleSwapItem(x)} item={x}/>
                             </li>
                         ))}
                     </InventoryItemsContainer>
@@ -110,22 +120,7 @@ function Inventory({ selectedMenu, closeMenu }: InventoryProps) {
 
 export default Inventory
 
-
 export interface IItem {
     id: string,
     name: string,
 }
-// Define the default items
-const defaultPlayer1Items: IItem[] = [
-    { id: crypto.randomUUID(), name: "item1" },
-    { id: crypto.randomUUID(), name: "Item2" },
-    { id: crypto.randomUUID(), name: "item1" },
-    { id: crypto.randomUUID(), name: "Item2" },
-    { id: crypto.randomUUID(), name: "item1" },
-    { id: crypto.randomUUID(), name: "Item2" },
-];
-
-const defaultRoomItems: IItem[] = [
-    { id: crypto.randomUUID(), name: "test" },
-    { id: crypto.randomUUID(), name: "test" },
-];

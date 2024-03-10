@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { IItem } from './Inventory'
-
+import * as dtos from "../../Redux/query/generated.ts"
 
 const ItemDiv = styled.div`
     background-color: teal;
@@ -12,14 +11,14 @@ const ItemDiv = styled.div`
 `
 
 interface IItemsProps {
-    item: IItem,
+    item: dtos.Item,
     onClick?: React.MouseEventHandler<HTMLDivElement> | undefined
 }
 function Item({ item, onClick }: IItemsProps) {
     //
     return (
         <ItemDiv onClick={onClick}>
-            {item.name}
+            {item.itemType}
         </ItemDiv>
     )
 }

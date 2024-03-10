@@ -1,36 +1,31 @@
-import { useState } from "react";
-import { containsWithEqualityComparer, hasDuplicateWithComparer, hasDuplicates } from "../Utils/ListExtensions";
+import {useState} from "react";
+import {addElementImmutable, containsWithEqualityComparer, hasDuplicateWithComparer} from "../Utils/ListExtensions";
 
-
-
-// equality is to check if two checked items are the same. 
-export function useSelections<T>(initialSelections: T[], equalityComparer: (arg1: T, arg2: T) => boolean) {
+// idea: does not keep a local version of the CHOICEs of selections. SImply keeps a local version of the SELECTED elements.
+// therefore I can use isSelected and check for a value.
+export function useSelections<T>(equalityComparer: (arg1: T, arg2: T) => boolean) {
     // expects non-duplicates
-    if (hasDuplicateWithComparer(initialSelections, equalityComparer)) {
-        console.error("Yeah so no duplicates allowed in target selections")
-    }
-
     const [selections, setSelections] = useState<T[]>([])
 
     function checkSelection(val: T) {
-        const updatedSelections = [...selections, val]
-
-        console.log("update selections")
-        console.log(updatedSelections)
-        setSelections(updatedSelections)
+        setSelections([...selections, val])
     }
+
     function uncheckSelection(val: T) {
         // KEEP all the ones that are NOT equal to this value
         const updatedSelections = selections.filter(x => !equalityComparer(x, val))
         setSelections(updatedSelections)
     }
+
     function isSelected(val: T) {
         const isSelected = containsWithEqualityComparer(selections, val, equalityComparer)
         return isSelected
     }
+
     function reset() {
         setSelections([])
     }
+
     const returns = {
         checkSelection,
         uncheckSelection,

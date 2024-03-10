@@ -44,7 +44,7 @@ interface IChatProps {
     setSelectedMenu: React.Dispatch<React.SetStateAction<MenuSelections>>;
 }
 
-function Chat({ selectedMenu, closeMenu, setSelectedMenu }: IChatProps) {
+function Chat({ selectedMenu, closeMenu }: IChatProps) {
     const [textInput, setTextInput] = useState("")
     const [chatMessages, setChatMessages] = useState(dummyText)
     const isChatOpen = selectedMenu === 'chat'

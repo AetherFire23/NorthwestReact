@@ -8,9 +8,9 @@ import { useMouseEffect } from '../App';
 import { rooms } from '../RoomPositions';
 
 
-// Remember everything gotta be at the correct PIXEL position 
+// Remember everything gotta be at the correct PIXEL position
 // html-css doesnt care about my world positions.
-const moveRight = (fromPosition: IVector, targetPosition: IVector) => keyframes`
+const moveAtPointClickAnimation = (fromPosition: IVector, targetPosition: IVector) => keyframes`
   0% {
     transform: translate(${fromPosition.x}px, ${fromPosition.y}px);
   }
@@ -25,7 +25,7 @@ const StyledDiv = styled.div<{ $localPosition: IVector, $targetPosition: IVector
     position: absolute;
     /* left: ${({ $localPosition }) => $localPosition.x}px;
     top: ${({ $localPosition }) => $localPosition.y}px; */
-    animation: ${({ $localPosition, $targetPosition }) => moveRight($localPosition, $targetPosition)} 1s linear  forwards;
+    animation: ${({ $localPosition, $targetPosition }) => moveAtPointClickAnimation($localPosition, $targetPosition)} 1s linear  forwards;
 `;
 
 export default function SquareObj() {
@@ -43,7 +43,7 @@ export default function SquareObj() {
     //     const handleClick = (e: MouseEvent) => {
     //         const mouseWorld = mouseToWorld(e)
     //         if (isAnimating) {
-    //             // When interrupting the ongoing css animation, the playerPosition is contained in the view in screenPx 
+    //             // When interrupting the ongoing css animation, the playerPosition is contained in the view in screenPx
     //             // since the css animation is not controlled by react.
     //             const playerRefWorldPosition = screenToWorld(getElementScreenPosition(squareRef))
     //             dispatch(updateLocalPlayer(playerRefWorldPosition))
@@ -75,8 +75,8 @@ export default function SquareObj() {
         }
 
         if (isAnimating) {
-            // When interrupting the ongoing css animation, the playerPosition is contained in the view in screenPx 
-            // since the css animation is not controlled by react.
+            // When interrupting the ongoing css animation, the playerPosition is contained in the view in screenPx
+            // since the interpolating positions during the css animation is not controlled by react.
             const playerRefWorldPosition = screenToWorld(getElementScreenPosition(squareRef))
             dispatch(updateLocalPlayer(playerRefWorldPosition))
             setTargetWorldPosition(mouseWorldPosition)

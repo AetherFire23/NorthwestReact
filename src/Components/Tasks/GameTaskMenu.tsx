@@ -1,11 +1,12 @@
 import styled from "styled-components"
-import { MenuSelections } from "../Bar";
-import { ExitButtonDiv } from "../Inventory/Inventory";
-import { useState } from "react";
-import { ITargetScreenInfo } from "./TargetSelectionScreen";
-import TargetSelectionScreen from './TargetSelectionScreen';
-import { useSelections } from "../../Hooks/useSelections";
-import { isEmpty } from "../../Utils/ListExtensions";
+import {MenuSelections} from "../Bar";
+import {ExitButtonDiv} from "../Inventory/Inventory";
+import {useState} from "react";
+import {ITargetScreenInfo} from "./TargetSelectionScreen";
+import {useSubmittedTasks} from "./GameTaskMenu-hooks.tsx";
+import TaskCheckMark from "./SelectionCheckMark.tsx";
+import {useAppSelector} from "../../Redux/hooks.tsx";
+import {selectVisibleTasks} from "../../Redux/gameStateSlice.ts";
 
 const GameTasksMenuDiv = styled.div`
     background-color: black;
@@ -46,7 +47,7 @@ const RequirementsLabel = styled.label`
     top: 2%;
 `
 const RequirementLineLabel = styled.label`
-    
+
 `
 const RequirementsPanelDiv = styled.div`
     background-color: #aa9a9a;
@@ -74,75 +75,110 @@ const TaskAvailabilityDiv = styled.div`
     margin-left: 0.5rem;
     margin-top: 0.5rem;
 `
+const TargetSelectionDiv = styled.div`
+    position: absolute;
+    background-color: #6e6e5a;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 25%;
+`
+
 interface IGameTaskProps {
     selectedMenu: MenuSelections;
     closeMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
-export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps) {
-    console.log(taskInfoMap)
-    const isMenuOpen = selectedMenu === "tasks";
-    const [selectedTask, setSelectedTask] = useState("stupidTask")
+
+export default function GameTaskMenu({selectedMenu, closeMenu}: IGameTaskProps) {
+    const isTasksOpen = selectedMenu === "tasks"
+
+    const visibleTasks = useAppSelector(selectVisibleTasks)
     const [isPrompting, setIsPrompting] = useState(false)
 
-    // each inner array represents a STEP - a list of possible selections with a certain type (ex. room, item, player)
-    const [submittedSelections, setSubmittedSelections] = useState<string[][]>([])
-    function addSelections(selections: string[]) {
-        const updatedSubmissions = [...submittedSelections!, selections]
-        setSubmittedSelections(updatedSubmissions)
-    }
+    const {
+        setSelectedTask,
+        targetSelection,
+        displayedTargets,
+        selectedTask,
+        submitDisplayedTargetsOrExecuteTask,
+        executeTaskNoTargets,
+    } = useSubmittedTasks(() => setIsPrompting(false))
 
-    function submitTask() {
-        console.log("Submit task completely")
-        setIsPrompting(false)
-    }
+    function startPrompting() {
+        if (!selectedTask) throw new Error("should not be able to execute a task that does not exist.")
+        if (!selectedTask.canExecuteTask) return;
 
-    function executeTaskOrStartPrompting() {
-        if (!taskInfoMap[selectedTask].hasTarget) {
-            console.log("execute task completely")
-        }
-        else {
-            console.log("start prompting user")
+        // if no targets, execute straight-away.
+        if (selectedTask.taskPromptInfos.length === 0) {
+            executeTaskNoTargets()
+        } else {
             setIsPrompting(true)
         }
     }
+
     return (
         <div>
-            {isPrompting && (
-                <TargetSelectionScreen
-                    submitTask={submitTask}
-                    submitSelections={addSelections}
-                    taskInfo={taskInfoMap[selectedTask]}>
-                </TargetSelectionScreen>
+            {(isPrompting) && (
+                <TargetSelectionDiv>
+                    <ul style={{margin: "0", padding: "0"}}>
+                        {displayedTargets?.displayedTargets.taskTargets.map(x => (
+                            <li>
+                                <TaskCheckMark
+                                    check={() => targetSelection.checkSelection(x)}
+                                    uncheck={() => targetSelection.uncheckSelection(x)}
+                                    isChecked={targetSelection.isSelected(x)}
+                                    text={x.appearanceName!}/>
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={submitDisplayedTargetsOrExecuteTask}> submitTasks</button>
+                </TargetSelectionDiv>
             )}
-            {(isMenuOpen && !isPrompting) && (
+            {(isTasksOpen && !isPrompting) && (
                 <GameTasksMenuDiv>
-                    <div onClick={executeTaskOrStartPrompting} style={{ position: "absolute", backgroundColor: "white", width: "5rem", height: "2rem", left: "1rem", top: "1rem" }}>
+                    <div onClick={startPrompting} style={{
+                        position: "absolute",
+                        backgroundColor: "white",
+                        width: "5rem",
+                        height: "2rem",
+                        left: "1rem",
+                        top: "1rem"
+                    }}>
 
                     </div>
                     <ExitButtonDiv onClick={closeMenu}>
                         X
                     </ExitButtonDiv>
+
+
                     <AvailableTasksListDiv>
-                        <ul style={{ margin: "0", padding: "0" }}>
-                            {dummyTaskNames.map((x, i) => (
+                        <ul style={{margin: "0", padding: "0"}}>
+                            {visibleTasks.map((x, i) => (
                                 <li key={i}>
-                                    <TaskAvailabilityDiv onClick={e => setSelectedTask(x)}>
-                                        {x}
+                                    <TaskAvailabilityDiv
+                                        style={{backgroundColor: x.canExecuteTask ? "" : "brown"}}
+                                        onClick={() => {
+                                            console.log(x.gameTaskName)
+                                            setSelectedTask(x.gameTaskName)
+                                        }}>
+                                        {x.gameTaskName}
                                     </TaskAvailabilityDiv>
                                 </li>
                             ))}
                         </ul>
                     </AvailableTasksListDiv>
+
+
                     <TaskInfosDiv>
                         <RequirementsLabel>
                             Requirements
                         </RequirementsLabel>
                         <RequirementsPanelDiv>
-                            <ul style={{ margin: "0", padding: "0" }}>
-                                {taskInfoMap[selectedTask].requirements.map(t => (
+                            <ul style={{margin: "0", padding: "0"}}>
+                                {selectedTask!.requirements.map(t => (
                                     <li>
                                         <div>
-                                            {t}
+                                            {t.description}
                                         </div>
                                     </li>
                                 ))}
@@ -151,17 +187,17 @@ export default function GameTaskMenu({ selectedMenu, closeMenu }: IGameTaskProps
                         <EffectsLabel>
                             Effects
                         </EffectsLabel>
-                        <EffectsPanelDiv>
-                            <ul style={{ margin: "0", padding: "0" }}>
-                                {taskInfoMap[selectedTask].effects.map(t => (
-                                    <li>
-                                        <div>
-                                            {t}
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </EffectsPanelDiv>
+                        {/*<EffectsPanelDiv>*/}
+                        {/*    <ul style={{margin: "0", padding: "0"}}>*/}
+                        {/*        {selectedTask.gameTaskName.effects.map(t => (*/}
+                        {/*            <li>*/}
+                        {/*                <div>*/}
+                        {/*                    {t}*/}
+                        {/*                </div>*/}
+                        {/*            </li>*/}
+                        {/*        ))}*/}
+                        {/*    </ul>*/}
+                        {/*</EffectsPanelDiv>*/}
                     </TaskInfosDiv>
                     <AvailableTextLabel> Available Tasks</AvailableTextLabel>
                 </GameTasksMenuDiv>
@@ -174,16 +210,19 @@ const dummyTaskNames = [
     "stupidTask2",
     "stupidTask3",
 ]
+
 export interface ITargetCheck {
     isChecked: boolean,
     targetValue: string
 }
+
 export interface ITaskInfo {
     hasTarget: boolean,
     requirements: string[],
     effects: string[],
     targetSteps?: ITargetScreenInfo[]
 }
+
 const stupidTaskTargetsInfo2: ITargetScreenInfo = {
     minimumTargetsAmount: 1,
     maximumTargetsAmount: 3,
@@ -223,3 +262,4 @@ const taskInfoMap: { [key: string]: ITaskInfo } = {
 // I am probably in the YAGNI space here.
 // All I know is that im gonna need a target of X type
 // and X amount of selections.
+

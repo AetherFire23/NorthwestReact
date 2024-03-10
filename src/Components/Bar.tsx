@@ -4,7 +4,11 @@ import {useEffect, useState} from 'react';
 import Chat from './Chat/Chat';
 import GameTaskMenu from './Tasks/GameTaskMenu';
 import Logs from './Logs/Logs';
-import {useAppSelector} from "../Redux/hooks.tsx";
+import {api} from "../Redux/query/generated.ts";
+import {useAppDispatch, useAppSelector} from "../Redux/hooks.tsx";
+import {isValidObject} from "../Utils/nice.tsx";
+import {updateGameStateSlice} from "../Redux/gameStateSlice.ts";
+
 
 const StyledBar = styled.div`
     background-color: black;
@@ -28,29 +32,36 @@ const MenuButtonDiv = styled.div`
 `
 export type MenuSelections = "none" | "inventory" | "ship" | "logs" | "chat" | "tasks"
 export default function Bar() {
-
-    useGameStateFetcher()
+    useGameStateRefresher()
     const [selectedMenu, setSelectedMenu] = useState<MenuSelections>("none")
     const closeMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setSelectedMenu("none")
         e.stopPropagation()
     }
+    const gameState = useAppSelector(x => x.gameState.gameState)
+   // logObject("gamestate inside Bar", gameState)
     return (
         <div>
-            <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/>
-            <GameTaskMenu closeMenu={closeMenu} selectedMenu={selectedMenu}/>
-            <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu}/>
-            <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
-            <StyledBar>
-                <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")}/>
-                <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")}/>
-                <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")}/>
-                <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")}/>
-                <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")}/>
-                <MenuButton txt='character' onClick={() => setSelectedMenu("chat")}/>
-            </StyledBar>
-        </div>
-    )
+            {isValidObject(gameState) && (
+                <div>
+                    <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/>
+                    <GameTaskMenu closeMenu={closeMenu} selectedMenu={selectedMenu}/>
+                    <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu}/>
+
+                    <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
+                    <StyledBar>
+                        <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")}/>
+                        <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")}/>
+                        <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")}/>
+                        <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")}/>
+                        <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")}/>
+                        <MenuButton txt='character' onClick={() => setSelectedMenu("chat")}/>
+                    </StyledBar>
+                </div>
+)}
+
+</div>
+)
 }
 
 interface MenuButtonParams {
@@ -73,30 +84,25 @@ function MenuButton({onClick, txt}: MenuButtonParams) {
     )
 }
 
-function useGameStateFetcher() {
-    const userDto = useAppSelector(x => x.mainMenu.userDto);
+function useGameStateRefresher() {
+    const dispatch = useAppDispatch()
+    const mainMenuSlice = useAppSelector(x => x.mainMenu)
+    const [triggerFetchGameState, ] = api.useLazyGetGameGetGameStateQuery()
 
     useEffect(() => {
-        function onTick() {
-            console.log("ontick")
-            console.log(userDto.players.$values[0])
-            if (userDto.players.$values[0] && userDto.players.$values[0].length > 0) {
-                triggerGetGameState({
-                    playerId: userDto.players[0].id,
-                    lastTimeStamp: lastTimeStamp
-                }).unwrap().then(x => {
-                    console.log('successfully fetched gameState');
-                    console.log(x);
-                    console.log(userDto);
-                }).catch(error => {
-                    console.error('Error fetching gameState:', error);
-                });
-            } else {
-                console.log("No players available yet.");
-            }
-        }
+        const onTick = () => {
+            const player = mainMenuSlice.userDto!.players[0]
+            // OUSSCHURENDU:
+            // Faire le GameStateSlice pour pouvoir savoir si le timestamp y'est null ou pas.
+            // et ensuite storer le result dans le slice de redux
+           // logObject("this is player", player)
+            triggerFetchGameState({lastTimeStamp: undefined, playerId: player.id}).unwrap().then(fetchedGameState => {
+                dispatch(updateGameStateSlice({gameState: fetchedGameState, currentPlayerId: player.id!}))
 
-        const intervalId = setInterval(onTick, 1000);
-        return () => clearInterval(intervalId);
-    }, );
+            })
+        }
+        const intervalId = setInterval(onTick, 2000)
+
+        return () => clearInterval(intervalId)
+    }, []);
 }

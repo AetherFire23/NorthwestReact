@@ -51,7 +51,7 @@ export default function CamChange() {
     //     return () => window.removeEventListener("keydown", test)
     // }, [cameraPosition])
 
-    useMouseEffect((mouseScreenPos, world) => {
+    useMouseEffect((mouseScreenPos, _) => {
         const detectableGap = 50
         if (isWithin(mouseScreenPos.x, window.innerWidth - detectableGap, window.innerWidth)) {
             console.log(chalk.green("right"))

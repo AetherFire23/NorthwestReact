@@ -18,7 +18,7 @@ const ImageDiv = styled.div<{ $xOffset: number, $yOffset: number }>`
     z-index: -10;
 `;
 
-function BackGroundImage({ children }: { children?: React.ReactNode }) {
+function BackGroundImage() {
     const camera = useAppSelector(selectCamera)
 
     return (

@@ -1,48 +1,39 @@
 import React from 'react'
 import useControlledInput from "../Hooks/useControlledInput.tsx";
-import {useAppDispatch} from "../Redux/hooks.tsx";
-import {Client, LoginRequest} from "../Redux/testgen.ts";
+import {LoginResult} from "../Redux/testgen.ts";
+import {useRequestStatus} from "../Hooks/useRequestStatus.tsx";
+import {useAppDispatch, useAppSelector} from "../Redux/hooks.tsx";
+import {updateMainMenuSlice} from "../Redux/mainMenuSlice.ts";
+import {api} from "../Redux/query/generated.ts"
+import {logObject} from "../Utils/nice.tsx";
 
 interface ILoginPageProps {
     setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 function LoginPage({setIsLoggedIn}: ILoginPageProps) {
-    const dispatch = useAppDispatch()
     const {text: usernameText, control: controlUserName} = useControlledInput("username")
     const {text: passwordText, control: controlPassword} = useControlledInput("password")
-    // const [triggerLogin,] = api.usePostUsersLoginMutation()
-    // const [triggerMainMenu,] = api.useLazyGetMainmenuGetMainMenuStateQuery()
-    const s = new Client("http://localhost:7060")
+    const {data, triggerFetch} = useRequestStatus<LoginResult>()
+    const [login, datea] = api.usePostUsersLoginMutation()
+    const [fetchMainMenu, mainMenuData] = api.useLazyGetMainmenuGetMainMenuStateQuery()
+    const dispatch = useAppDispatch()
+    const mainMenuSlice = useAppSelector(x => x.mainMenu)
 
-
+    // ok lets try with just simple then() clauses after.
+    // client.login()
+    // client.getMainMenuState()
+    // seems like I need to use thunks. I guess its unescapable
     function handleLogin() {
-        s.login(new LoginRequest({userName: "username", passwordAttempt: "password"})).then(loginResult => {
-            console.log(loginResult)
-            setIsLoggedIn(true)
-
-            s.getMainMenuState(loginResult.userId).then(mainMenuContext => {
-                console.log(mainMenuContext)
-
+        login({body: {userName: usernameText, passwordAttempt: passwordText}}).unwrap().then(r => {
+            console.log("trigger result")
+            console.log(r)
+            fetchMainMenu({userId: r.userId}).unwrap().then(r2 => {
+                logObject("this is main menu data", r2)
+                dispatch(updateMainMenuSlice(r2))
+                setIsLoggedIn(true)
             })
         })
-
-
-        // triggerLogin({body: {userName: usernameText, passwordAttempt: passwordText}}).unwrap().then(r => {
-        //     // save some info inside localstorage
-        //     window.localStorage.setItem("userId", r.userId!)
-        //     window.localStorage.setItem("token", r.token!)
-        //
-        // after login, fetch the main menu.
-        // triggerMainMenu({userId: r.userId}).unwrap().then(r => {
-        //     console.log("test2")
-        //     dispatch(updateMainMenuSlice({userDto: r.userDto, timeStamp: r.timeStamp}))
-        //     setIsLoggedIn(true)
-        //     console.log("test3")
-        // })
-        //
-        //
-        // })
     }
 
     return (
@@ -50,6 +41,10 @@ function LoginPage({setIsLoggedIn}: ILoginPageProps) {
             <input value={usernameText} onChange={controlUserName}/>
             <input value={passwordText} onChange={controlPassword}/>
             <button onClick={handleLogin}> send</button>
+            {data.isFetching && (<label> fetching</label>)}
+            {data.isError && (<label> Error</label>)}
+            {data.isSuccess && (<label>succ </label>)}
+            <button onClick={() => console.log(mainMenuSlice)}> Log MainMenu Slice</button>
         </div>
     )
 }

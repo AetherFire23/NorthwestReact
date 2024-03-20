@@ -101,6 +101,7 @@ export default function GameTaskMenu({selectedMenu, closeMenu}: IGameTaskProps) 
         displayedTargets,
         selectedTask,
         submitDisplayedTargetsOrExecuteTask,
+        goToPrevious,
         executeTaskNoTargets,
     } = useSubmittedTasks(() => setIsPrompting(false))
 
@@ -124,14 +125,15 @@ export default function GameTaskMenu({selectedMenu, closeMenu}: IGameTaskProps) 
                         {displayedTargets?.displayedTargets.taskTargets.map(x => (
                             <li>
                                 <TaskCheckMark
-                                    check={() => targetSelection.checkSelection(x)}
-                                    uncheck={() => targetSelection.uncheckSelection(x)}
-                                    isChecked={targetSelection.isSelected(x)}
+                                    check={() => targetSelection?.check(x)}
+                                    uncheck={() => targetSelection?.uncheck(x)}
+                                    isChecked={targetSelection!.isChecked(x)!}
                                     text={x.appearanceName!}/>
                             </li>
                         ))}
                     </ul>
                     <button onClick={submitDisplayedTargetsOrExecuteTask}> submitTasks</button>
+                    <button onClick={() => goToPrevious!()}> previous</button>
                 </TargetSelectionDiv>
             )}
             {(isTasksOpen && !isPrompting) && (

@@ -22,8 +22,12 @@ export function useSelections<T>(equalityComparer: (arg1: T, arg2: T) => boolean
         return isSelected
     }
 
-    function reset() {
-        setSelections([])
+    function reset(arr?: Array<T>) {
+        if (arr) {
+            setSelections(arr)
+        } else {
+            setSelections([])
+        }
     }
 
     const returns = {

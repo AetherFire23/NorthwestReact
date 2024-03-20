@@ -1,3 +1,16 @@
+TODO:
+- Clicking on doors can make player change room
+- Clicking on rooms changes the currently selected room's inventory
+- Make works logs again
+
+- Explore options for player animations
+- Hover name over player
+
+- Create Ship UI
+- Create Character info UI
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

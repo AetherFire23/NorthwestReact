@@ -4,7 +4,7 @@ export interface RoomInfo {
     name: string,
     square: Rectangle
 }
-const initialRoom: RoomInfo = {
+const MiddleCorridor: RoomInfo = {
     name: "test",
     square: {
         height: 130,
@@ -13,7 +13,8 @@ const initialRoom: RoomInfo = {
     }
 }
 export const rooms: RoomInfo[] = [
-    initialRoom,
+    MiddleCorridor,
+
 ];
 
 

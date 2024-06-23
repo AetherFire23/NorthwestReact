@@ -21,7 +21,7 @@ export const counterSlice = createSlice({
             // logObject("Updating gameState slice with this data:", action.payload)
             state.currentPlayerId = action.payload.currentPlayerId
             state.gameState = action.payload.gameState
-
+            
             // not initialized yet, so put the default room
             if (!state.currentSelectedRoomId) {
                 state.currentSelectedRoomId = action.payload.gameState.localPlayerRoom.id

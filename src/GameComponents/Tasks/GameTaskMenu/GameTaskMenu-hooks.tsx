@@ -1,16 +1,16 @@
 import {useState} from "react";
-import {useAppSelector} from "../../Redux/hooks.tsx";
+import {useAppSelector} from "../../../Redux/hooks.tsx";
 import {
     GameTaskTargetInfo, PutGameExecuteTaskApiArg, usePutGameExecuteTaskMutation
-} from "../../Redux/query/generated.ts";
-import {useSelections} from "../../Hooks/useSelections.tsx";
-import {selectVisibleTasks} from "../../Redux/gameStateSlice.ts";
-import {logObject} from "../../Utils/nice.tsx";
+} from "../../../Redux/query/generated.ts";
+import {useSelections} from "../../../Hooks/useSelections.tsx";
+import {selectVisibleTasks} from "../../../Redux/gameStateSlice.ts";
+import {logObject} from "../../../Utils/nice.tsx";
 
 // Goal : readonly and no persistence except for displaying stuff.
 function useSelectedTask() {
     const availableGameTasks = useAppSelector(selectVisibleTasks)
-    const [selectedTaskName, setSelectedTaskName] = useState(availableGameTasks[0].gameTaskName) // make condition if taskName === "" dont render anything
+    const [selectedTaskName, setSelectedTaskName] = useState(availableGameTasks[0].gameTaskName)
     const selectedTask = availableGameTasks.find(t => t.gameTaskName === selectedTaskName)
 
     return {
@@ -124,16 +124,11 @@ export function useSubmittedTasks(closeTargetsPrompt: () => void) {
     const [triggerExecuteTask, taskQueryData] = usePutGameExecuteTaskMutation()
 
     // A list of targets, therefore a list of list.
-    // will probably need a hook of the submitted I guess
     const [submittedTargets, setSubmittedTargets] = useState<GameTaskTargetInfo[][]>([])
 
     const saveCurrentTargetSelectionToSubmitted = () => {
         if (!currentSelectedTargets) throw new Error(" shouldnt be null")
 
-        // Should not ADD the selcetions but set the selections at teh current index.
-
-        // it doesnt properly reset the selections.
-        logObject("this is the selected targets before submitted. Is there more than expected?", displayedTargetsData?.selectionsData.selectedTargets)
         const submittedTargetsCopy = [...submittedTargets]
         submittedTargetsCopy[displayedTargetsData?.index] = displayedTargetsData?.selectionsData.selectedTargets
         setSubmittedTargets(submittedTargetsCopy)

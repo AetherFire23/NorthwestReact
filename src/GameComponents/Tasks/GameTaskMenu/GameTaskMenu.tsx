@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { MenuSelections } from "../Bar";
+import { MenuSelections } from "../../MainMenuBar/MainMenuBar.tsx";
 import { useState } from "react";
 import { useSubmittedTasks } from "./GameTaskMenu-hooks.tsx";
-import TaskCheckMark from "./SelectionCheckMark.tsx";
-import { MainTasksPanel } from "./MainTasksPanel.tsx";
+import TaskCheckMark from "../TasksPanelStuff/SelectionCheckMark.tsx";
+import { MainTasksPanel } from "../TasksPanelStuff/MainTasksPanel.tsx";
 
 const TargetSelectionDiv = styled.div`
     position: absolute;

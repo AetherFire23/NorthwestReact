@@ -1,8 +1,8 @@
 import styled from "styled-components"
-import { ExitButtonDiv } from "../Inventory/Inventory";
-import { useAppSelector } from "../../Redux/hooks";
-import { selectVisibleTasks } from "../../Redux/gameStateSlice";
-import { GameTaskAvailabilityResultRead } from "../../Redux/query/generated";
+import { ExitButtonDiv } from "../../Inventory/Inventory";
+import { useAppSelector } from "../../../Redux/hooks";
+import { selectVisibleTasks } from "../../../Redux/gameStateSlice";
+import { GameTaskAvailabilityResultRead } from "../../../Redux/query/generated";
 
 const GameTasksMenuDiv = styled.div`
     background-color: black;
@@ -133,17 +133,6 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
                 <EffectsLabel>
                     Effects
                 </EffectsLabel>
-                {/*<EffectsPanelDiv>*/}
-                {/*    <ul style={{margin: "0", padding: "0"}}>*/}
-                {/*        {selectedTask.gameTaskName.effects.map(t => (*/}
-                {/*            <li>*/}
-                {/*                <div>*/}
-                {/*                    {t}*/}
-                {/*                </div>*/}
-                {/*            </li>*/}
-                {/*        ))}*/}
-                {/*    </ul>*/}
-                {/*</EffectsPanelDiv>*/}
             </TaskInfosDiv>
             <AvailableTextLabel> Available Tasks</AvailableTextLabel>
         </GameTasksMenuDiv>

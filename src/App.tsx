@@ -1,14 +1,14 @@
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
-import CamChange from "./Components/CamChange";
+import CamChange from "./GameComponents/CamChange.tsx";
 import React, { useEffect, useState } from "react";
 import { getMousePosition, useTransformations } from "./Utils/nice";
 import { Vector } from "./Models/Vector";
-import LocalPlayer from "./Components/LocalPlayer";
-import BackGroundImage from "./Components/BackGroundImage";
-import Rooms from "./Components/Rooms"
-import MenuBar from './Components/Bar';
-import LoginPage from "./Pages/LoginPage.tsx";
+import LocalPlayer from "./GameComponents/LocalPlayer.tsx";
+import BackGroundImage from "./GameComponents/BackGroundImage.tsx";
+import Rooms from "./GameComponents/Rooms.tsx"
+import MenuBar from './GameComponents/MainMenuBar/MainMenuBar.tsx';
+import LoginPage from "./AuthPages/LoginPage.tsx";
 
 export default function App() {
     return (
@@ -32,6 +32,7 @@ export default function App() {
 function GameContainer() {
     useMouseLog()
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    
 
     return (
         <div>

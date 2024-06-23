@@ -1,19 +1,19 @@
 import styled from 'styled-components'
-import Inventory from './Inventory/Inventory';
 import { useEffect, useState } from 'react';
-import Chat from './Chat/Chat';
-import GameTaskMenu from './Tasks/GameTaskMenu';
-import { api } from "../Redux/query/generated.ts";
-import { useAppDispatch, useAppSelector } from "../Redux/hooks.tsx";
-import { isValidObject } from "../Utils/nice.tsx";
-import { updateGameStateSlice } from "../Redux/gameStateSlice.ts";
+import Chat from './Chat/Chat.tsx';
+import GameTaskMenu from '../Tasks/GameTaskMenu/GameTaskMenu.tsx';
+import { api } from "../../Redux/query/generated.ts";
+import { useAppDispatch, useAppSelector } from "../../Redux/hooks.tsx";
+import { isValidObject } from "../../Utils/nice.tsx";
+import { updateGameStateSlice } from "../../Redux/gameStateSlice.ts";
+import Inventory from './Inventory/Inventory.tsx';
 
 const StyledBar = styled.div`
     background-color: black;
-    width: 40%;
+    width: 98%;
     height: 20%;
-    left: 5%;
-    top: 75%;
+    left: 0%;
+    top: 0%;
     position: absolute;
     display: flex;
     align-items: center;
@@ -91,22 +91,19 @@ function useGameStateRefresher() {
     useEffect(() => {
         const onTick = () => {
             const player = mainMenuSlice!.userDto!.players[0]!
-            // OUSSCHURENDU:
+
             // Faire le GameStateSlice pour pouvoir savoir si le timestamp y'est null ou pas.
             // et ensuite storer le result dans le slice de redux
             // logObject("this is player", player)
             triggerFetchGameState({ lastTimeStamp: undefined, playerId: player.id }).unwrap().then(fetchedGameState => {
                 dispatch(updateGameStateSlice({
                     gameState: fetchedGameState,
-                    currentPlayerId: player.id!
+                    currentPlayerId: player.id!,
                 }))
                 console.log(fetchedGameState)
-
             })
-
         }
         const intervalId = setInterval(onTick, 2000)
-
         return () => clearInterval(intervalId)
     }, []);
 }

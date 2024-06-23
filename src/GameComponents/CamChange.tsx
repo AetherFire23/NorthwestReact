@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from '../Redux/hooks';
+import { useAppDispatch, useAppSelector } from '../Redux/hooks.tsx';
 import { selectCamera, updateCamera } from "../Redux/gameSlice.ts"
 import { useMouseEffect } from '../App.tsx';
 import { isWithin } from '../Utils/nice.tsx';
 import chalk from 'chalk';
-import { calculateTranslation } from '../Utils/nice';
+import { calculateTranslation } from '../Utils/nice.tsx';
 import { Vector } from '../Models/Vector.ts';
 
 function useMoveCamera() {
@@ -28,6 +28,7 @@ function useMoveCamera() {
 
     return s
 }
+
 export default function CamChange() {
     const { cameraPosition, translateCamera } = useMoveCamera()
     const moveDistance = 125;
@@ -61,7 +62,7 @@ export default function CamChange() {
             console.log(chalk.green("left"))
             translateCamera({ x: moveDistance, y: 0 })
         }
-        if (isWithin(mouseScreenPos.y, 0, detectableGap)) {
+        if (isWithin(mouseScreenPos.y, 0, 125)) {
             console.log(chalk.green("up"))
             translateCamera({ x: 0, y: moveDistance })
         }

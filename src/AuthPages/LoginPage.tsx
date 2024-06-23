@@ -1,10 +1,10 @@
 import React from 'react'
 import useControlledInput from "../Hooks/useControlledInput.tsx";
-import {LoginResult} from "../Redux/testgen.ts";
+
 import {useRequestStatus} from "../Hooks/useRequestStatus.tsx";
 import {useAppDispatch, useAppSelector} from "../Redux/hooks.tsx";
 import {updateMainMenuSlice} from "../Redux/mainMenuSlice.ts";
-import {api} from "../Redux/query/generated.ts"
+import {api, LoginResult} from "../Redux/query/generated.ts"
 import {logObject} from "../Utils/nice.tsx";
 
 interface ILoginPageProps {
@@ -20,10 +20,6 @@ function LoginPage({setIsLoggedIn}: ILoginPageProps) {
     const dispatch = useAppDispatch()
     const mainMenuSlice = useAppSelector(x => x.mainMenu)
 
-    // ok lets try with just simple then() clauses after.
-    // client.login()
-    // client.getMainMenuState()
-    // seems like I need to use thunks. I guess its unescapable
     function handleLogin() {
         login({body: {userName: usernameText, passwordAttempt: passwordText}}).unwrap().then(r => {
             console.log("trigger result")
@@ -31,6 +27,7 @@ function LoginPage({setIsLoggedIn}: ILoginPageProps) {
             fetchMainMenu({userId: r.userId}).unwrap().then(r2 => {
                 logObject("this is main menu data", r2)
                 dispatch(updateMainMenuSlice(r2))
+                // save to localstorage
                 setIsLoggedIn(true)
             })
         })

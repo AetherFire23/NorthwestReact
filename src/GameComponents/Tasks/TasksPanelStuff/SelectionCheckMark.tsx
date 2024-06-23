@@ -1,4 +1,3 @@
-
 interface ICheckMarkProps {
     isChecked: boolean,
     uncheck: () => void,
@@ -6,7 +5,6 @@ interface ICheckMarkProps {
     text: string,
 }
 export default function TaskCheckMark({ check, uncheck, isChecked, text }: ICheckMarkProps) {
-
     function handleCheck() {
         console.log(text)
         if (isChecked) {
@@ -18,6 +16,7 @@ export default function TaskCheckMark({ check, uncheck, isChecked, text }: IChec
             check()
         }
     }
+
     return (
         <div style={{ display: "flex", flexDirection: "row" }}>
             <div

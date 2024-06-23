@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import {MenuSelections} from "../Bar"
-import Item from "./Item"
+import {MenuSelections} from "../MainMenuBar/MainMenuBar.tsx"
+import Item from "./Item.tsx"
 import {useAppDispatch, useAppSelector} from "../../Redux/hooks.tsx";
 import {swapItemOptimistically} from "../../Redux/gameStateSlice.ts";
 import * as shared from "../../Redux/query/generated.ts"

@@ -3,6 +3,12 @@ import {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../../Redux/hooks.tsx";
 import {updateMainMenuSlice} from "../../Redux/mainMenuSlice.ts";
 
+
+export function useAutoJoinGame() {
+
+}
+
+
 export function useMainMenuRefresh() {
     const userId = useAppSelector(x => x!.mainMenu!.userDto!.id)
     const dispatch = useAppDispatch()

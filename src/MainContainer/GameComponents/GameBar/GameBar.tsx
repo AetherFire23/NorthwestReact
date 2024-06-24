@@ -32,8 +32,10 @@ const MenuButtonDiv = styled.div`
 `
 
 export type MenuSelections = "none" | "inventory" | "ship" | "logs" | "chat" | "tasks"
-export default function GameBar() {
-    useGameStateRefresher()
+export default function GameBar({gameId}:{
+    gameId: string,
+}) {
+    useGameStateRefresher(gameId)
     const [selectedMenu, setSelectedMenu] = useState<MenuSelections>("none")
     const closeMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setSelectedMenu("none")

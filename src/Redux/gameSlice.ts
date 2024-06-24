@@ -10,7 +10,7 @@ interface IGameState {
 const initialState: IGameState = {
     localPlayer: vectorZero,
     cameraPosition: { x: 0, y: 0 },
-    otherPlayers: [vectorZero]
+    otherPlayers: []
 }
 export const counterSlice = createSlice({
     name: 'counter',

@@ -167,6 +167,15 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getUsersLoginas: build.query<
+      GetUsersLoginasApiResponse,
+      GetUsersLoginasApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/users/loginas`,
+        params: { roleType: queryArg.roleType },
+      }),
+    }),
     getUsersTest: build.query<GetUsersTestApiResponse, GetUsersTestApiArg>({
       query: () => ({ url: `/users/test` }),
     }),
@@ -245,6 +254,10 @@ export type PostUsersTokenloginApiArg = void;
 export type PostUsersRegisterApiResponse = /** status 200 OK */ UserDtoRead;
 export type PostUsersRegisterApiArg = {
   body: RegisterRequest;
+};
+export type GetUsersLoginasApiResponse = /** status 200 OK */ AutoLoginResult;
+export type GetUsersLoginasApiArg = {
+  roleType?: RoleType;
 };
 export type GetUsersTestApiResponse = unknown;
 export type GetUsersTestApiArg = void;
@@ -588,6 +601,9 @@ export type RegisterRequest = {
   password?: string | null;
   email?: string | null;
 };
+export type AutoLoginResult = {
+  userName?: string | null;
+};
 export const {
   usePutChatCreateChatroomMutation,
   usePutChatLeaveChatRoomMutation,
@@ -604,5 +620,6 @@ export const {
   usePostUsersLoginMutation,
   usePostUsersTokenloginMutation,
   usePostUsersRegisterMutation,
+  useGetUsersLoginasQuery,
   useGetUsersTestQuery,
 } = injectedRtkApi;

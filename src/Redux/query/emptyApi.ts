@@ -2,7 +2,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import {RootState} from "../store.ts";
 
-const cachedToken: string = ""
+let cachedToken: string | null = null;
 
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const emptySplitApi = createApi({
@@ -10,17 +10,13 @@ export const emptySplitApi = createApi({
         baseUrl: 'http://localhost:7060/',
         prepareHeaders: (headers, {getState}) => {
             // The prepareHeaders tries to get a token for each request.
-            const token = window.localStorage.getItem("token")
-            console.log(token)
+            cachedToken = !cachedToken ? window.localStorage.getItem("token") : cachedToken
 
-            if (!token) return headers
+            if (!cachedToken) return headers
 
-            headers.set("Authorization", "Bearer " + token)
-
-            console.log("did I prepare headers correctly")
+            headers.set("Authorization", "Bearer " + cachedToken)
             return headers;
         }
     }),
     endpoints: () => ({}),
-
 })

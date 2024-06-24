@@ -1,30 +1,38 @@
 import {useTokenLocalStorage} from "./useTokenLocalStorage.tsx";
-import {api, useGetMainmenuGetMainMenuStateQuery, usePostUsersTokenloginMutation} from "../../Redux/query/generated.ts";
+import {
+    api,
+    LoginResult,
+    useGetMainmenuGetMainMenuStateQuery,
+    usePostUsersTokenloginMutation
+} from "../../Redux/query/generated.ts";
 import React, {useEffect} from "react";
 import {useAppDispatch} from "../../Redux/hooks.tsx";
 import {updateMainMenuSlice} from "../../Redux/mainMenuSlice.ts";
+import {main} from "esbuild-runner/lib/cli";
 
 export function useAutoLogin(setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>) {
-    const tokenStorage = useTokenLocalStorage()
     const [fetchTokenLogin,] = usePostUsersTokenloginMutation()
     const [fetchMainMenuSlice,] = api.useLazyGetMainmenuGetMainMenuStateQuery()
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        // check to see if we can login by token
         // Remember prepareheaders of rtk query automatically tries to get token from localstorage
-        fetchTokenLogin()
-            .unwrap()
-            .then((loginResult) => {
-                fetchMainMenuSlice({userId: loginResult.userId})
-                    .unwrap()
-                    .then(r => {
-                        dispatch(updateMainMenuSlice({userDto: r.userDto, timeStamp: r.timeStamp}))
-                        setIsLoggedIn(true)
-                    })
-            })
-            .catch(e => {
-                console.log("could not login with provided token")
-            })
+        // So if token value in localstorage was already set, we just have to try to make a request and
+        // check if it fails.
+
+        async function handleLogin() {
+            try {
+                const {userId} = await fetchTokenLogin().unwrap()
+                const {userDto, timeStamp} = await fetchMainMenuSlice({userId: userId}).unwrap()
+                dispatch(updateMainMenuSlice({userDto: userDto, timeStamp: timeStamp}))
+                setIsLoggedIn(true)
+
+            } catch (e) {
+                console.log("Could not login with provided token in localstorage")
+            }
+            console.log("handle login function")
+        }
+
+        handleLogin()
     }, []);
 }

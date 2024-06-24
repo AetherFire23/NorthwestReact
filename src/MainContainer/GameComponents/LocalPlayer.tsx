@@ -1,11 +1,11 @@
-import styled, { keyframes } from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 
-import { useRef, useState } from 'react';
-import { IVector, squareContains } from './Models/Vector';
-import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
-import { selectCamera, selectLocalPlayer, updateLocalPlayer } from '../../Redux/gameSlice';
-import { getElementScreenPosition, logObject, useTransformations } from '../../Utils/nice';
-import { rooms } from '../../RoomPositions';
+import {useRef, useState} from 'react';
+import {IVector, squareContains} from './Models/Vector';
+import {useAppDispatch, useAppSelector} from '../../Redux/hooks';
+import {selectCamera, selectLocalPlayer, updateLocalPlayer} from '../../Redux/gameSlice';
+import {getElementScreenPosition, logObject, useTransformations} from '../../Utils/nice';
+import {rooms} from '../../RoomPositions';
 import {useMouseEffect} from "../MainContainer-hooks.tsx";
 
 // import { useMouseEffect } from '../App';
@@ -18,28 +18,31 @@ import {useMouseEffect} from "../MainContainer-hooks.tsx";
 // Remember everything gotta be at the correct PIXEL position
 // html-css doesnt care about my world positions.
 const moveAtPointClickAnimation = (fromPosition: IVector, targetPosition: IVector) => keyframes`
-  0% {
-    transform: translate(${fromPosition.x}px, ${fromPosition.y}px);
-  }
-  100% {
-    transform: translate(${targetPosition.x}px, ${targetPosition.y}px);
-  } 
+    0% {
+        transform: translate(${fromPosition.x}px, ${fromPosition.y}px);
+    }
+    100% {
+        transform: translate(${targetPosition.x}px, ${targetPosition.y}px);
+    }
 `;
 
 const StyledDiv = styled.div<{ $localPosition: IVector, $targetPosition: IVector }>`
     background-color: blue;
     padding: 20px;
     position: absolute;
-    /* left: ${({ $localPosition }) => $localPosition.x}px;
-    top: ${({ $localPosition }) => $localPosition.y}px; */
-    animation: ${({ $localPosition, $targetPosition }) => moveAtPointClickAnimation($localPosition, $targetPosition)} 1s linear  forwards;
+        /* left: ${({$localPosition}) => $localPosition.x}px;
+    top: ${({$localPosition}) => $localPosition.y}px; */
+    animation: ${({
+                      $localPosition,
+                      $targetPosition
+                  }) => moveAtPointClickAnimation($localPosition, $targetPosition)} 1s linear forwards;
 `;
 
 export default function SquareObj() {
     const dispatch = useAppDispatch()
     const camera = useAppSelector(selectCamera)
     const localPlayer = useAppSelector(selectLocalPlayer)
-    const { screenToWorld, mouseToWorld, worldToScreen } = useTransformations()
+    const {screenToWorld, mouseToWorld, worldToScreen} = useTransformations()
     const localPlayerPosition = worldToScreen(localPlayer)
     const [targetWorldPosition, setTargetWorldPosition] = useState<IVector>(localPlayerPosition)
     const squareRef = useRef<HTMLDivElement>(null)
@@ -87,8 +90,7 @@ export default function SquareObj() {
             const playerRefWorldPosition = screenToWorld(getElementScreenPosition(squareRef))
             dispatch(updateLocalPlayer(playerRefWorldPosition))
             setTargetWorldPosition(mouseWorldPosition)
-        }
-        else {
+        } else {
             setTargetWorldPosition(mouseWorldPosition)
             setIsAnimating(true)
             console.log("animating")
@@ -96,11 +98,19 @@ export default function SquareObj() {
     }, [squareRef, isAnimating])
 
     function onAnimationEnd(event: React.AnimationEvent<HTMLDivElement>) {
-        dispatch(updateLocalPlayer(targetWorldPosition))
+
+        // targetWorldPosition
+        const newPosition: IVector = {
+            x: targetWorldPosition.x,
+            y: targetWorldPosition.y
+        }
+        dispatch(updateLocalPlayer(newPosition))
         setIsAnimating(false)
     }
+
     return (
-        <StyledDiv $localPosition={localPlayerPosition} $targetPosition={worldToScreen(targetWorldPosition)} onAnimationEnd={onAnimationEnd} ref={squareRef}>
+        <StyledDiv $localPosition={localPlayerPosition} $targetPosition={worldToScreen(targetWorldPosition)}
+                   onAnimationEnd={onAnimationEnd} ref={squareRef}>
 
         </StyledDiv>
     )

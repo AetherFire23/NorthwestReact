@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../Redux/store'
-import { IVector, vectorZero } from '../Models/Vector';
+import { IVector, vectorZero } from '../MainContainer/GameComponents/Models/Vector';
 
 interface IGameState {
     cameraPosition: IVector,

@@ -1,8 +1,8 @@
 import styled from "styled-components"
-import { ExitButtonDiv } from "../../Inventory/Inventory";
-import { useAppSelector } from "../../../Redux/hooks";
-import { selectVisibleTasks } from "../../../Redux/gameStateSlice";
-import { GameTaskAvailabilityResultRead } from "../../../Redux/query/generated";
+import { GameTaskAvailabilityResultRead } from "../../../../Redux/query/generated"
+import { useAppSelector } from "../../../../Redux/hooks"
+import { selectVisibleTasks } from "../../../../Redux/gameStateSlice"
+import { ExitButtonDiv } from "../../GameBar/Inventory/Inventory"
 
 const GameTasksMenuDiv = styled.div`
     background-color: black;

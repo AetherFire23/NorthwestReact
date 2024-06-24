@@ -1,11 +1,11 @@
 import styled from "styled-components"
-import {MenuSelections} from "../MainMenuBar/MainMenuBar.tsx"
-import Item from "./Item.tsx"
-import {useAppDispatch, useAppSelector} from "../../Redux/hooks.tsx";
-import {swapItemOptimistically} from "../../Redux/gameStateSlice.ts";
-import * as shared from "../../Redux/query/generated.ts"
-import {getSelectedRoom, isPlayerItem} from "../../Hooks/gameStateHooks.tsx";
-import {usePutGameTransferitemMutation} from "../../Redux/query/generated.ts";
+import ItemComponent from "./ItemComponent.tsx"
+import { MenuSelections } from "../GameBar.tsx"
+import { useAppDispatch, useAppSelector } from "../../../../Redux/hooks.tsx"
+import { getSelectedRoom, isPlayerItem } from "../../../../Hooks/gameStateHooks.tsx"
+import { usePutGameTransferitemMutation } from "../../../../Redux/query/generated.ts"
+import { Item } from "../../../../Redux/query/generated.ts"
+import { swapItemOptimistically } from "../../../../Redux/gameStateSlice.ts"
 
 const InventoryScreenContainer = styled.div`
     background-color: black;
@@ -64,7 +64,7 @@ function Inventory({selectedMenu, closeMenu}: InventoryProps) {
     const roomItems = getSelectedRoom(gameStateSlice).items
     const playerItems = gameStateSlice.gameState.playerDto.items
 
-    function handleSwapItem(item: shared.Item) {
+    function handleSwapItem(item: Item) {
         // if player, send to room, if room, send to player
         const targetId = isPlayerItem(gameStateSlice.gameState, item) ? gameStateSlice.gameState.localPlayerRoom.id : gameStateSlice.gameState.playerDto.id
 
@@ -75,7 +75,7 @@ function Inventory({selectedMenu, closeMenu}: InventoryProps) {
             itemId: item.id,
             gameId: gameStateSlice.gameState.playerDto.gameId,
             targetId: targetId,
-            ownerId: item.ownerId
+            
         }).unwrap().then(r => {
             dispatch(swapItemOptimistically(item))
         })
@@ -100,7 +100,7 @@ function Inventory({selectedMenu, closeMenu}: InventoryProps) {
                         {playerItems.map((x) => (
                             <li key={x.id}>
                                 {/*<Item onClick={() => swapItems(x, true)} item={x}/>*/}
-                                <Item onClick={() => handleSwapItem(x)} item={x}/>
+                                <ItemComponent onClick={() => handleSwapItem(x)} item={x}/>
                             </li>
                         ))}
                         {/* Room items */}
@@ -108,7 +108,7 @@ function Inventory({selectedMenu, closeMenu}: InventoryProps) {
                     <InventoryItemsContainer $left={55}>
                         {roomItems.map((x) => (
                             <li key={x.id}>
-                                <Item onClick={() => handleSwapItem(x)} item={x}/>
+                                <ItemComponent onClick={() => handleSwapItem(x)} item={x}/>
                             </li>
                         ))}
                     </InventoryItemsContainer>

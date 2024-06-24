@@ -1,10 +1,9 @@
-import { useAppDispatch, useAppSelector } from '../Redux/hooks.tsx';
-import { selectCamera, updateCamera } from "../Redux/gameSlice.ts"
-import { useMouseEffect } from '../App.tsx';
-import { isWithin } from '../Utils/nice.tsx';
 import chalk from 'chalk';
-import { calculateTranslation } from '../Utils/nice.tsx';
-import { Vector } from '../Models/Vector.ts';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { selectCamera, updateCamera } from '../../Redux/gameSlice';
+import { Vector } from './Models/Vector';
+import { calculateTranslation, isWithin } from '../../Utils/nice';
+import {useMouseEffect} from "../MainContainer-hooks.tsx";
 
 function useMoveCamera() {
     const dispatch = useAppDispatch()
@@ -32,25 +31,6 @@ function useMoveCamera() {
 export default function CamChange() {
     const { cameraPosition, translateCamera } = useMoveCamera()
     const moveDistance = 125;
-    // useEffect(() => {
-    //     const test = (e: KeyboardEvent) => {
-    //         if (e.key === "w") {
-    //             dispatch(updateCamera(translateY(cameraPosition, moveDistance)))
-    //         }
-    //         if (e.key === "a") {
-    //             dispatch(updateCamera(translateX(cameraPosition, moveDistance)))
-    //         }
-    //         if (e.key === "s") {
-    //             dispatch(updateCamera(translateY(cameraPosition, -moveDistance)))
-    //         }
-    //         if (e.key === "d") {
-    //             dispatch(updateCamera(translateX(cameraPosition, -moveDistance)))
-    //         }
-    //     }
-    //     window.addEventListener("keydown", test)
-
-    //     return () => window.removeEventListener("keydown", test)
-    // }, [cameraPosition])
 
     useMouseEffect((mouseScreenPos, _) => {
         const detectableGap = 50
@@ -72,17 +52,9 @@ export default function CamChange() {
         }
     }, [cameraPosition])
 
-
     return (
-        <div style={{overflow: "hidden", width: "100%", height: "100%"}}>
-            {/* <button onClick={(e) => {
-                dispatch(updateCamera({ x: cameraPosition.x - 50, y: cameraPosition.y }))
-                e.stopPropagation()
-            }}> Left</button>
-            <button onClick={(e) => {
-                dispatch(updateCamera({ x: cameraPosition.x + 50, y: cameraPosition.y }))
-                e.stopPropagation()
-            }}> Right</button> */}
+        <div style={{ overflow: "hidden", width: "100%", height: "100%" }}>
+
         </div>
     )
 }

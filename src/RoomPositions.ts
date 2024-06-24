@@ -1,4 +1,4 @@
-import { Rectangle } from "./Models/Vector";
+import { Rectangle } from "./MainContainer/GameComponents/Models/Vector";
 
 export interface RoomInfo {
     name: string,

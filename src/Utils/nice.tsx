@@ -1,4 +1,4 @@
-import {IVector, Rectangle, Vector} from "../Models/Vector";
+import {IVector, Rectangle, Vector} from "../MainContainer/GameComponents/Models/Vector";
 import {selectCamera} from "../Redux/gameSlice";
 import {useAppSelector} from "../Redux/hooks";
 
@@ -20,7 +20,7 @@ export function calcualteOffset(p: IVector, p2: IVector): IVector {
     return offsetPosition
 }
 
-export function logObject(message: string, o: any) {
+export function logObject(message: string, o: NonNullable<unknown>) {
     console.log(message)
     console.log(o)
 }
@@ -115,7 +115,7 @@ export function isWithin(num: number, min: number, max: number) {
     return isWithinRange
 }
 
-export function isValidObject(obj: any) {
+export function isValidObject(obj: NonNullable<unknown>) {
 
     const isFalsy = obj === null || obj === undefined
 

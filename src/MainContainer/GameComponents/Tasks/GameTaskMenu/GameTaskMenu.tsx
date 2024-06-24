@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { MenuSelections } from "../../MainMenuBar/MainMenuBar.tsx";
+import { MenuSelections } from "../../GameBar/GameBar.tsx";
 import { useState } from "react";
 import { useSubmittedTasks } from "./GameTaskMenu-hooks.tsx";
 import TaskCheckMark from "../TasksPanelStuff/SelectionCheckMark.tsx";

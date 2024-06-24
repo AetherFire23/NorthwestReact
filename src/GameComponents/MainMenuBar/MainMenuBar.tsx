@@ -1,12 +1,12 @@
 import styled from 'styled-components'
-import { useEffect, useState } from 'react';
-import Chat from './Chat/Chat.tsx';
-import GameTaskMenu from '../Tasks/GameTaskMenu/GameTaskMenu.tsx';
-import { api } from "../../Redux/query/generated.ts";
-import { useAppDispatch, useAppSelector } from "../../Redux/hooks.tsx";
-import { isValidObject } from "../../Utils/nice.tsx";
-import { updateGameStateSlice } from "../../Redux/gameStateSlice.ts";
-import Inventory from './Inventory/Inventory.tsx';
+import {useEffect, useState} from 'react';
+import {api} from "../../Redux/query/generated.ts";
+import {useAppDispatch, useAppSelector} from "../../Redux/hooks.tsx";
+import {isValidObject} from "../../Utils/nice.tsx";
+import {updateGameStateSlice} from "../../Redux/gameStateSlice.ts";
+import GameTaskMenu from '../../MainContainer/GameComponents/Tasks/GameTaskMenu/GameTaskMenu.tsx';
+import Inventory from '../../MainContainer/GameComponents/GameBar/Inventory/Inventory.tsx';
+import Chat from '../../MainContainer/GameComponents/Chat/Chat.tsx';
 
 const StyledBar = styled.div`
     background-color: black;
@@ -45,17 +45,17 @@ export default function MenuBar() {
             {isValidObject(gameState) && (
                 <div>
                     {/* <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/> */}
-                    <GameTaskMenu closeMenu={closeMenu} selectedMenu={selectedMenu} />
-                    <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu} />
+                    <GameTaskMenu closeMenu={closeMenu} selectedMenu={selectedMenu}/>
+                    <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu}/>
 
-                    <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
+                    <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
                     <StyledBar>
-                        <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")} />
-                        <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")} />
-                        <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")} />
-                        <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")} />
-                        <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")} />
-                        <MenuButton txt='character' onClick={() => setSelectedMenu("chat")} />
+                        <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")}/>
+                        <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")}/>
+                        <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")}/>
+                        <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")}/>
+                        <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")}/>
+                        <MenuButton txt='character' onClick={() => setSelectedMenu("chat")}/>
                     </StyledBar>
                 </div>
             )}
@@ -68,7 +68,7 @@ interface MenuButtonParams {
     onClick?: () => void,
 }
 
-function MenuButton({ onClick, txt }: MenuButtonParams) {
+function MenuButton({onClick, txt}: MenuButtonParams) {
     function onClick2(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         if (onClick) {
             onClick()
@@ -90,12 +90,14 @@ function useGameStateRefresher() {
 
     useEffect(() => {
         const onTick = () => {
+            //@ts-expect-error sds
             const player = mainMenuSlice!.userDto!.players[0]!
 
             // Faire le GameStateSlice pour pouvoir savoir si le timestamp y'est null ou pas.
             // et ensuite storer le result dans le slice de redux
             // logObject("this is player", player)
-            triggerFetchGameState({ lastTimeStamp: undefined, playerId: player.id }).unwrap().then(fetchedGameState => {
+            triggerFetchGameState({lastTimeStamp: undefined, playerId: player.id}).unwrap().then(fetchedGameState => {
+                //@ts-expect-error sdsd
                 dispatch(updateGameStateSlice({
                     gameState: fetchedGameState,
                     currentPlayerId: player.id!,

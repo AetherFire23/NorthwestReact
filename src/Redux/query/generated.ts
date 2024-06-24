@@ -151,6 +151,12 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    postUsersTokenlogin: build.mutation<
+      PostUsersTokenloginApiResponse,
+      PostUsersTokenloginApiArg
+    >({
+      query: () => ({ url: `/users/tokenlogin`, method: "POST" }),
+    }),
     postUsersRegister: build.mutation<
       PostUsersRegisterApiResponse,
       PostUsersRegisterApiArg
@@ -184,8 +190,7 @@ export type PutChatPutNewMessageToServerApiArg = {
   roomId?: string;
   receivedMessage?: string;
 };
-export type GetGameGetGameStateApiResponse =
-  /** status 200 Success */ GameStateRead;
+export type GetGameGetGameStateApiResponse = /** status 200 OK */ GameStateRead;
 export type GetGameGetGameStateApiArg = {
   playerId?: string;
   lastTimeStamp?: string;
@@ -215,12 +220,11 @@ export type PutGameChangeroomApiArg = {
   targetRoomName?: string;
 };
 export type GetMainmenuGetMainMenuStateApiResponse =
-  /** status 200 Success */ MainMenuStateRead;
+  /** status 200 OK */ MainMenuStateRead;
 export type GetMainmenuGetMainMenuStateApiArg = {
   userId?: string;
 };
-export type PostMainmenuCreatelobbyApiResponse =
-  /** status 200 Success */ LobbyRead;
+export type PostMainmenuCreatelobbyApiResponse = /** status 200 OK */ LobbyRead;
 export type PostMainmenuCreatelobbyApiArg = {
   userId?: string;
 };
@@ -232,25 +236,34 @@ export type PostMainmenuStartGameApiResponse = unknown;
 export type PostMainmenuStartGameApiArg = {
   lobbyId?: string;
 };
-export type PostUsersLoginApiResponse = /** status 200 Success */ LoginResult;
+export type PostUsersLoginApiResponse = /** status 200 OK */ LoginResult;
 export type PostUsersLoginApiArg = {
   body: LoginRequest;
 };
-export type PostUsersRegisterApiResponse =
-  /** status 200 Success */ UserDtoRead;
+export type PostUsersTokenloginApiResponse = /** status 200 OK */ LoginResult;
+export type PostUsersTokenloginApiArg = void;
+export type PostUsersRegisterApiResponse = /** status 200 OK */ UserDtoRead;
 export type PostUsersRegisterApiArg = {
   body: RegisterRequest;
 };
 export type GetUsersTestApiResponse = unknown;
 export type GetUsersTestApiArg = void;
-export type RoleType = "Commander" | "Medic" | "Sailor" | "Cook" | "Engineer";
+export type RoleType =
+  | "Commander"
+  | "Medic"
+  | "Sailor"
+  | "Cook"
+  | "Engineer"
+  | "Engineer2"
+  | "Engineer3"
+  | "Engineer4";
 export type ItemType = "Wrench" | "Hose";
 export type Item = {
   ownerId?: string;
   itemType?: ItemType;
   id: string;
 };
-export type SkillEnum = "CookBonus" | "AttackBonus" | "ShootLaser";
+export type Skills = "CookBonus" | "AttackBonus" | "ShootLaser";
 export type PlayerDto = {
   id?: string;
   gameId?: string;
@@ -258,7 +271,7 @@ export type PlayerDto = {
   currentGameRoomId?: string;
   profession?: RoleType;
   items: Item[];
-  skills?: SkillEnum[] | null;
+  skills?: Skills[] | null;
   name?: string | null;
   x?: number;
   y?: number;
@@ -589,6 +602,7 @@ export const {
   usePostMainmenuJoinLobbyMutation,
   usePostMainmenuStartGameMutation,
   usePostUsersLoginMutation,
+  usePostUsersTokenloginMutation,
   usePostUsersRegisterMutation,
   useGetUsersTestQuery,
 } = injectedRtkApi;

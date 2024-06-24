@@ -1,8 +1,7 @@
 
 import styled from 'styled-components'
-import { useAppSelector } from '../Redux/hooks';
-import { selectCamera } from '../Redux/gameSlice';
-
+import { useAppSelector } from '../../Redux/hooks';
+import { selectCamera } from '../../Redux/gameSlice';
 
 // warning : I think url always starts from source and is not rrlly neegative
 // why does ../../src/assets/anime.jpg work tho ?

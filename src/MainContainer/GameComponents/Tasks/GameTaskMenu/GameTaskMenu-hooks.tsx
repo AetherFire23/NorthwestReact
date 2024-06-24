@@ -1,11 +1,8 @@
 import {useState} from "react";
-import {useAppSelector} from "../../../Redux/hooks.tsx";
-import {
-    GameTaskTargetInfo, PutGameExecuteTaskApiArg, usePutGameExecuteTaskMutation
-} from "../../../Redux/query/generated.ts";
-import {useSelections} from "../../../Hooks/useSelections.tsx";
-import {selectVisibleTasks} from "../../../Redux/gameStateSlice.ts";
-import {logObject} from "../../../Utils/nice.tsx";
+import { useAppSelector } from "../../../../Redux/hooks";
+import { selectVisibleTasks } from "../../../../Redux/gameStateSlice";
+import { useSelections } from "../../../../Hooks/useSelections";
+import { GameTaskTargetInfo, PutGameExecuteTaskApiArg, usePutGameExecuteTaskMutation } from "../../../../Redux/query/generated";
 
 // Goal : readonly and no persistence except for displaying stuff.
 function useSelectedTask() {

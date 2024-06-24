@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { ExitButtonDiv } from '../Inventory/Inventory'
-import { MenuSelections } from '../MainMenuBar';
+import { MenuSelections } from '../GameBar';
 import { useState } from 'react';
 import ChatTextContainer from './ChatTextContainer';
 

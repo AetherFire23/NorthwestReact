@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import * as dtos from "../../Redux/query/generated.ts"
+import { Item } from '../../../../Redux/query/generated'
 
 const ItemDiv = styled.div`
     background-color: teal;
@@ -11,10 +11,10 @@ const ItemDiv = styled.div`
 `
 
 interface IItemsProps {
-    item: dtos.Item,
+    item: Item,
     onClick?: React.MouseEventHandler<HTMLDivElement> | undefined
 }
-function Item({ item, onClick }: IItemsProps) {
+function ItemComponent({ item, onClick }: IItemsProps) {
     //
     return (
         <ItemDiv onClick={onClick}>
@@ -23,4 +23,4 @@ function Item({ item, onClick }: IItemsProps) {
     )
 }
 
-export default Item
+export default ItemComponent

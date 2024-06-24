@@ -1,14 +1,9 @@
-import { Provider } from "react-redux";
-import { store } from "./Redux/store";
-import CamChange from "./GameComponents/CamChange.tsx";
-import React, { useEffect, useState } from "react";
-import { getMousePosition, useTransformations } from "./Utils/nice";
-import { Vector } from "./Models/Vector";
-import LocalPlayer from "./GameComponents/LocalPlayer.tsx";
-import BackGroundImage from "./GameComponents/BackGroundImage.tsx";
-import Rooms from "./GameComponents/Rooms.tsx"
-import MenuBar from './GameComponents/MainMenuBar/MainMenuBar.tsx';
-import LoginPage from "./AuthPages/LoginPage.tsx";
+import {Provider} from "react-redux";
+import {store} from "./Redux/store";
+import React, {useEffect, useState} from "react";
+import {getMousePosition, useTransformations} from "./Utils/nice";
+import {Vector} from "./MainContainer/GameComponents/Models/Vector.ts";
+import MainContainer from "./MainContainer/MainContainer.tsx";
 
 export default function App() {
     return (
@@ -23,73 +18,28 @@ export default function App() {
             left: "0"
         }}>
             <Provider store={store}>
-                <GameContainer />
+                <MainContainer/>
             </Provider>
         </div>
     )
 }
 
-function GameContainer() {
-    useMouseLog()
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    
-
-    return (
-        <div>
-            {!isLoggedIn && (
-                <div>
-                    <LoginPage setIsLoggedIn={setIsLoggedIn}>
-                    </LoginPage>
-                </div>
-            )}
-
-            {isLoggedIn && (
-                <div>
-                    <MenuBar />
-                    <LocalPlayer />
-                    <CamChange />
-                    <BackGroundImage />
-                    <Rooms />
-                </div>
-            )}
-        </div>
-    )
-}
-
-function useMouseLog() {
-    const { camera, mouseToWorld } = useTransformations()
-
-    useEffect(() => {
-        const handleClick = (e: MouseEvent) => {
-            console.log(`Mouse position: ${e.clientX}x, ${e.clientY}y`)
-
-            const world = mouseToWorld(e)
-            console.log(`Mouse World: ${world.x}x ${world.y}y`)
-        }
-        window.addEventListener("click", handleClick)
-
-        return () => window.removeEventListener("click", handleClick)
-    }, [camera])
-}
-
-
-
-// Does something on click and passes click information as event
-// lesson : you can apss anny additional dependencies through React.DependencyList
-export function useMouseEffect(clickHandler: (screenPosition: Vector, worldPosition: Vector) => void, deps?: React.DependencyList | undefined) {
-    const { mouseToWorld } = useTransformations()
-
-    useEffect(() => {
-        function onClick(e: MouseEvent) {
-            const worldPos = mouseToWorld(e)
-            const screenPos = getMousePosition(e)
-
-            clickHandler(screenPos, worldPos)
-        }
-
-        window.addEventListener("click", onClick)
-
-        return () => window.removeEventListener("click", onClick)
-
-    }, [deps])
-}
+// // Does something on click and passes click information as event
+// // lesson : you can apss anny additional dependencies through React.DependencyList
+// export function useMouseEffect(clickHandler: (screenPosition: Vector, worldPosition: Vector) => void, deps?: React.DependencyList | undefined) {
+//     const {mouseToWorld} = useTransformations()
+//
+//     useEffect(() => {
+//         function onClick(e: MouseEvent) {
+//             const worldPos = mouseToWorld(e)
+//             const screenPos = getMousePosition(e)
+//
+//             clickHandler(screenPos, worldPos)
+//         }
+//
+//         window.addEventListener("click", onClick)
+//
+//         return () => window.removeEventListener("click", onClick)
+//
+//     }, [deps])
+// }

@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import { GameTaskTargetInfo } from "../../../Redux/query/generated"
 import TaskCheckMark from "./SelectionCheckMark"
+import { GameTaskTargetInfo } from "../../../../Redux/query/generated"
 
 const TargetSelectionDiv = styled.div`
     position: absolute;

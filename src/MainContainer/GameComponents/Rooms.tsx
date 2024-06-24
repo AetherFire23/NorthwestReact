@@ -1,7 +1,10 @@
 import styled from 'styled-components';
-import { RoomInfo, rooms } from '../RoomPositions';
-import { Rectangle } from '../Models/Vector';
-import { useTransformations } from '../Utils/nice';
+import { RoomInfo, rooms } from '../../RoomPositions';
+import { useTransformations } from '../../Utils/nice';
+import { Rectangle } from './Models/Vector';
+// import { RoomInfo, rooms } from '../RoomPositions';
+// import { Rectangle } from '../Models/Vector';
+// import { useTransformations } from '../Utils/nice';
 
 function Rooms() {
     return (

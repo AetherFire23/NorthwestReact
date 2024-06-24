@@ -1,8 +1,9 @@
 import styled from 'styled-components'
-import { ExitButtonDiv } from '../Inventory/Inventory'
-import { MenuSelections } from '../MainMenuBar';
 import { useState } from 'react';
-import ChatTextContainer from './ChatTextContainer';
+import { MenuSelections } from '../GameBar/GameBar';
+import ChatTextContainer from '../GameBar/Chat/ChatTextContainer';
+import { ExitButtonDiv } from '../GameBar/Inventory/Inventory';
+
 
 const ChatContainerDiv = styled.div`
     background-color: black;

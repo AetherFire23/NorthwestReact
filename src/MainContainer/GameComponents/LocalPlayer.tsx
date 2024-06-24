@@ -1,12 +1,19 @@
 import styled, { keyframes } from 'styled-components';
-import { IVector, squareContains } from '../Models/Vector';
-import { useAppDispatch, useAppSelector } from "../Redux/hooks";
-import { selectCamera, selectLocalPlayer, updateLocalPlayer } from "../Redux/gameSlice";
-import { getElementScreenPosition, logObject, useTransformations } from '../Utils/nice';
-import { useRef, useState } from 'react';
-import { useMouseEffect } from '../App';
-import { rooms } from '../RoomPositions';
 
+import { useRef, useState } from 'react';
+import { IVector, squareContains } from './Models/Vector';
+import { useAppDispatch, useAppSelector } from '../../Redux/hooks';
+import { selectCamera, selectLocalPlayer, updateLocalPlayer } from '../../Redux/gameSlice';
+import { getElementScreenPosition, logObject, useTransformations } from '../../Utils/nice';
+import { rooms } from '../../RoomPositions';
+import {useMouseEffect} from "../MainContainer-hooks.tsx";
+
+// import { useMouseEffect } from '../App';
+// import { rooms } from '../RoomPositions';
+// import { IVector, squareContains } from '../Models/Vector';
+// import { useAppDispatch, useAppSelector } from "../Redux/hooks";
+// import { selectCamera, selectLocalPlayer, updateLocalPlayer } from "../Redux/gameSlice";
+// import { getElementScreenPosition, logObject, useTransformations } from '../Utils/nice';
 
 // Remember everything gotta be at the correct PIXEL position
 // html-css doesnt care about my world positions.

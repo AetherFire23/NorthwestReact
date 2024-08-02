@@ -11,16 +11,21 @@ import Rooms from "./GameComponents/Rooms.tsx";
 import {useAutoLogin} from "./AutoLogin/useAutoLogin.tsx";
 
 
+
 export default function MainContainer() {
     useMouseLog()
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     // const [gameId, setGameId] = useState("")
+
+    // gameId should  be in ReduxState so that I can access it from everywhere
     const [gameId, setGameId] = useState("")
 
     useDevAutoLogin(setIsLoggedIn, setGameId)
+
+
     //useAutoLogin(setIsLoggedIn)
 
-    // useDevelopmentAutoLogin
+
 
 
     // auto login if credentials exist

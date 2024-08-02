@@ -1,12 +1,17 @@
 import {useState} from "react";
-import { useAppSelector } from "../../../../Redux/hooks";
-import { selectVisibleTasks } from "../../../../Redux/gameStateSlice";
-import { useSelections } from "../../../../Hooks/useSelections";
-import { GameTaskTargetInfo, PutGameExecuteTaskApiArg, usePutGameExecuteTaskMutation } from "../../../../Redux/query/generated";
+import {useAppSelector} from "../../../../Redux/hooks.tsx";
+import {selectVisibleTasks} from "../../../../Redux/gameStateSlice.ts";
+import {useSelections} from "../../../../Hooks/useSelections.tsx";
+import {
+    GameTaskTargetInfo,
+    PutGameExecuteTaskApiArg,
+    usePutGameExecuteTaskMutation
+} from "../../../../Redux/query/generated.ts";
 
 // Goal : readonly and no persistence except for displaying stuff.
-function useSelectedTask() {
+export function useSelectedTask() {
     const availableGameTasks = useAppSelector(selectVisibleTasks)
+
     const [selectedTaskName, setSelectedTaskName] = useState(availableGameTasks[0].gameTaskName)
     const selectedTask = availableGameTasks.find(t => t.gameTaskName === selectedTaskName)
 
@@ -16,25 +21,22 @@ function useSelectedTask() {
     }
 }
 
-function useSelectedTargets() {
+export function useSelectedTargets() {
     const selectedTargetsData = useSelections<GameTaskTargetInfo>((x, y) => x === y)
+
+    // where the actual selections are stored: List of list of targets
     const [savedSelections, setSavedSelections] = useState<GameTaskTargetInfo[][]>([])
     const [selectedIndex, setSelectedIndex] = useState<number>(0)
 
-    // I need to debug in chrome to understand which selections are saved.
-    // it really is the selectionData.selections that are important.
     function setSelectionsIndex(nextIndex: number) {
-        // Should be the same as the targets
-        // In all cases, save the selections that were checked before setting the index.
         const savedSelectionsCopy = [...savedSelections]
         savedSelectionsCopy[selectedIndex] = selectedTargetsData.selections
-
 
         const isOOB = nextIndex > savedSelections.length - 1
         if (isOOB) {
             // Add an empty list since it is the first time the user reaches this point.
             console.log("this is considered OOB")
-            const selectionsWithEmptyArray =[...savedSelectionsCopy, []]
+            const selectionsWithEmptyArray = [...savedSelectionsCopy, []]
             setSavedSelections(selectionsWithEmptyArray)
             selectedTargetsData.reset()
         } else {
@@ -64,7 +66,7 @@ function useSelectedTargets() {
     }
 }
 
-function useDisplayedTargets() {
+export function useDisplayedTargets() {
     const {selectedTask} = useSelectedTask()
     const [displayedTargetsIndex, setDisplayedTargetsIndex] = useState(0)
     const selectionsData = useSelectedTargets()
@@ -81,6 +83,10 @@ function useDisplayedTargets() {
         return displayedTargetsIndex !== selectedTask.taskPromptInfos.length - 1
     }
 
+    function hasPreviousTargetList() {
+        return !(displayedTargetsIndex === 0)
+    }
+
     // selections only move with the displayed targets
     const advanceToNextTargetList = () => {
         const nextIndex = displayedTargetsIndex + 1
@@ -95,6 +101,7 @@ function useDisplayedTargets() {
     }
 
     const resetDisplayedTargets = () => setDisplayedTargetsIndex(0)
+
     return {
         displayedTargets,
         hasNextTargetList,
@@ -103,22 +110,19 @@ function useDisplayedTargets() {
         goToPreviousTargetList,
         selectionsData: selectionsData,
         index: displayedTargetsIndex,
+        hasPreviousTargetList,
     }
 }
 
-// desired return type:
-// The currently selected task.
-// The currently shown targets
-// A method to advance to the next task target, OR to submit the task
-// A method to goes back in the previous targets.
-// Should not remove the
-// Selected targets and displayed targets should follow the same index.
+
 export function useSubmittedTasks(closeTargetsPrompt: () => void) {
     const gameState = useAppSelector(x => x.gameState)
     const selectedTaskData = useSelectedTask()
     const displayedTargetsData = useDisplayedTargets()
     const currentSelectedTargets = displayedTargetsData?.selectionsData.selectedTargets
     const [triggerExecuteTask, taskQueryData] = usePutGameExecuteTaskMutation()
+
+
 
     // A list of targets, therefore a list of list.
     const [submittedTargets, setSubmittedTargets] = useState<GameTaskTargetInfo[][]>([])
@@ -162,16 +166,40 @@ export function useSubmittedTasks(closeTargetsPrompt: () => void) {
         if (mustExecuteTask) {
             executeTaskWithTargets()
 
-            // cleanup with finished prompting so that next task isn't filled with garbage
+
             closeTargetsPrompt()
             displayedTargetsData.resetDisplayedTargets()
             setSubmittedTargets([])
             displayedTargetsData.selectionsData.clear()
-            return;
+            // return;
         }
 
         saveCurrentTargetSelectionToSubmitted()
         displayedTargetsData.advanceToNextTargetList() // only changes index
+    }
+
+    // cleanup with finished prompting so that next task isn't filled with garbage
+    function cleanupAndClosePrompts() {
+        closeTargetsPrompt()
+        displayedTargetsData!.resetDisplayedTargets()
+        setSubmittedTargets([])
+        displayedTargetsData!.selectionsData.clear()
+    }
+
+    function hasReachedMaximumTargets() {
+
+        if(displayedTargetsData?.displayedTargets === null || displayedTargetsData?.displayedTargets === undefined) {
+            const i = 0 ;
+
+        }
+        return displayedTargetsData?.displayedTargets.maximumTargets ===  currentSelectedTargets.length;
+    }
+
+    function hasReachedMinimumTargets() {
+        if(displayedTargetsData?.displayedTargets === null || displayedTargetsData?.displayedTargets === undefined) {
+            const i = 0 ;
+        }
+        return currentSelectedTargets.length >= displayedTargetsData?.displayedTargets.minimumTargets;
     }
 
     return {
@@ -183,5 +211,8 @@ export function useSubmittedTasks(closeTargetsPrompt: () => void) {
         targetSelection: displayedTargetsData?.selectionsData,
         executeTaskNoTargets: executeTaskNoTargets,
         goToPrevious: displayedTargetsData?.goToPreviousTargetList,
+        hasPreviousTargetList: displayedTargetsData?.hasPreviousTargetList,
+        hasReachedMaximumTargets,
+        hasReachedMinimumTargets
     }
 }

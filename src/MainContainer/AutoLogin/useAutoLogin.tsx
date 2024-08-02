@@ -8,7 +8,6 @@ import {
 import React, {useEffect} from "react";
 import {useAppDispatch} from "../../Redux/hooks.tsx";
 import {updateMainMenuSlice} from "../../Redux/mainMenuSlice.ts";
-import {main} from "esbuild-runner/lib/cli";
 
 export function useAutoLogin(setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>) {
     const [fetchTokenLogin,] = usePostUsersTokenloginMutation()

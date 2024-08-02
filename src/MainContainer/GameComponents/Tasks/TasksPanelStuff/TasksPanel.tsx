@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import TaskCheckMark from "./SelectionCheckMark"
-import { GameTaskTargetInfo } from "../../../../Redux/query/generated"
+import TaskCheckMark from "../TargetSelectionPrompt/TaskCheckMark.tsx"
+import { GameTaskTargetInfo } from "../../../../Redux/query/generated.ts"
 
 const TargetSelectionDiv = styled.div`
     position: absolute;

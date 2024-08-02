@@ -1,8 +1,8 @@
 import styled from "styled-components"
-import { GameTaskAvailabilityResultRead } from "../../../../Redux/query/generated"
-import { useAppSelector } from "../../../../Redux/hooks"
-import { selectVisibleTasks } from "../../../../Redux/gameStateSlice"
-import { ExitButtonDiv } from "../../GameBar/Inventory/Inventory"
+import { GameTaskAvailabilityResultRead } from "../../../../Redux/query/generated.ts"
+import { useAppSelector } from "../../../../Redux/hooks.tsx"
+import { selectVisibleTasks } from "../../../../Redux/gameStateSlice.ts"
+import { ExitButtonDiv } from "../../GameBar/Inventory/Inventory.tsx"
 
 const GameTasksMenuDiv = styled.div`
     background-color: black;
@@ -76,22 +76,22 @@ const TaskAvailabilityDiv = styled.div`
 export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSelectedTask }: {
     startPrompting: () => void,
     closeMenu: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void, 
-    selectedTask: GameTaskAvailabilityResultRead | undefined, 
+    selectedTask: GameTaskAvailabilityResultRead | undefined,
     setSelectedTask: React.Dispatch<React.SetStateAction<string>>
 }) {
     const visibleTasks = useAppSelector(selectVisibleTasks)
-
+   console.log(selectedTask)
     return (
         <GameTasksMenuDiv>
             <div onClick={startPrompting} style={{
                 position: "absolute",
-                backgroundColor: "white",
+                backgroundColor: "red",
                 width: "5rem",
                 height: "2rem",
-                left: "1rem",
+                left: "35rem",
                 top: "1rem"
             }}>
-
+                Ex
             </div>
             <ExitButtonDiv onClick={closeMenu}>
                 X

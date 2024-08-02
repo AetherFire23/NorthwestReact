@@ -1,13 +1,14 @@
 import styled from 'styled-components'
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import Chat from './Chat/Chat.tsx';
-import GameTaskMenu from '../Tasks/GameTaskMenu/GameTaskMenu.tsx';
+import MainTaskPanelFun from '../Tasks/MainTaskPanelFun.tsx';
 import Inventory from './Inventory/Inventory.tsx';
-import { useAppDispatch, useAppSelector } from '../../../Redux/hooks.tsx';
-import { isValidObject } from '../../../Utils/nice.tsx';
-import { api } from '../../../Redux/query/generated.ts';
-import { updateGameStateSlice } from '../../../Redux/gameStateSlice.ts';
+import {useAppDispatch, useAppSelector} from '../../../Redux/hooks.tsx';
+import {isValidObject} from '../../../Utils/nice.tsx';
+import {api} from '../../../Redux/query/generated.ts';
+import {updateGameStateSlice} from '../../../Redux/gameStateSlice.ts';
 import useGameStateRefresher from './GameStateRefresh/GameStateFetcher.tsx';
+import MainTaskPanelFun2 from '../Tasks/MainTaskPanelFun2.tsx';
 
 const StyledBar = styled.div`
     background-color: black;
@@ -32,7 +33,7 @@ const MenuButtonDiv = styled.div`
 `
 
 export type MenuSelections = "none" | "inventory" | "ship" | "logs" | "chat" | "tasks"
-export default function GameBar({gameId}:{
+export default function GameBar({gameId}: {
     gameId: string,
 }) {
     useGameStateRefresher(gameId)
@@ -48,17 +49,19 @@ export default function GameBar({gameId}:{
             {isValidObject(gameState) && (
                 <div>
                     {/* <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/> */}
-                    <GameTaskMenu closeMenu={closeMenu} selectedMenu={selectedMenu} />
-                    <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu} />
+                    {selectedMenu === "tasks" && (
+                        <MainTaskPanelFun2 closeMenu={closeMenu}/>
+                    )}
+                    <Inventory selectedMenu={selectedMenu} closeMenu={closeMenu}/>
 
-                    <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu} />
+                    <Chat closeMenu={closeMenu} selectedMenu={selectedMenu} setSelectedMenu={setSelectedMenu}/>
                     <StyledBar>
-                        <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")} />
-                        <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")} />
-                        <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")} />
-                        <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")} />
-                        <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")} />
-                        <MenuButton txt='character' onClick={() => setSelectedMenu("chat")} />
+                        <MenuButton txt='inv' onClick={() => setSelectedMenu("inventory")}/>
+                        <MenuButton txt='chat' onClick={() => setSelectedMenu("chat")}/>
+                        <MenuButton txt='logs' onClick={() => setSelectedMenu("logs")}/>
+                        <MenuButton txt='Task' onClick={() => setSelectedMenu("tasks")}/>
+                        <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")}/>
+                        <MenuButton txt='character' onClick={() => setSelectedMenu("chat")}/>
                     </StyledBar>
                 </div>
             )}
@@ -71,7 +74,7 @@ interface MenuButtonParams {
     onClick?: () => void,
 }
 
-function MenuButton({ onClick, txt }: MenuButtonParams) {
+function MenuButton({onClick, txt}: MenuButtonParams) {
     function onClick2(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         if (onClick) {
             onClick()

@@ -81,3 +81,13 @@ export function addElementImmutable<T>(arr: Array<T>, element: T) {
     const updatedArray = [...arr, element]
     return updatedArray
 }
+
+export function range(x: number, y: number) {
+    const foo: number[] = [];
+
+    for (let i = x; i < y; i++) {
+        foo.push(i);
+    }
+
+    return foo;
+}

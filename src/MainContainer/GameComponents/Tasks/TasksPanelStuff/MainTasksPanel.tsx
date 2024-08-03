@@ -4,7 +4,7 @@ import { useAppSelector } from "../../../../Redux/hooks.tsx"
 import { selectVisibleTasks } from "../../../../Redux/gameStateSlice.ts"
 import { ExitButtonDiv } from "../../GameBar/Inventory/Inventory.tsx"
 
-const GameTasksMenuDiv = styled.div`
+const ExecuteGameTaskDiv = styled.div`
     background-color: black;
     position: absolute;
     left: 5%;
@@ -80,23 +80,22 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
     setSelectedTask: React.Dispatch<React.SetStateAction<string>>
 }) {
     const visibleTasks = useAppSelector(selectVisibleTasks)
-   console.log(selectedTask)
+
     return (
-        <GameTasksMenuDiv>
+        <ExecuteGameTaskDiv>
             <div onClick={startPrompting} style={{
                 position: "absolute",
-                backgroundColor: "red",
+                backgroundColor: selectedTask?.canExecuteTask ? "green" : "red",
                 width: "5rem",
                 height: "2rem",
                 left: "35rem",
                 top: "1rem"
             }}>
-                Ex
+                Execute Task
             </div>
             <ExitButtonDiv onClick={closeMenu}>
                 X
             </ExitButtonDiv>
-
             <AvailableTasksListDiv>
                 <ul style={{ margin: "0", padding: "0" }}>
                     {visibleTasks.map((x, i) => (
@@ -104,7 +103,6 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
                             <TaskAvailabilityDiv
                                 style={{ backgroundColor: x.canExecuteTask ? "" : "brown" }}
                                 onClick={() => {
-                                    console.log(x.gameTaskName)
                                     setSelectedTask(x.gameTaskName)
                                 }}>
                                 {x.gameTaskName}
@@ -113,8 +111,6 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
                     ))}
                 </ul>
             </AvailableTasksListDiv>
-
-
             <TaskInfosDiv>
                 <RequirementsLabel>
                     Requirements
@@ -135,6 +131,6 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
                 </EffectsLabel>
             </TaskInfosDiv>
             <AvailableTextLabel> Available Tasks</AvailableTextLabel>
-        </GameTasksMenuDiv>
+        </ExecuteGameTaskDiv>
     )
 }

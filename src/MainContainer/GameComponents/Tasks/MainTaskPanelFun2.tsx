@@ -35,8 +35,13 @@ export default function MainTaskPanelFun2({closeMenu}: IGameTaskProps) {
     const startPrompting = () => {
         if (!selectedTask!.canExecuteTask) console.log("cant execute")
 
+        if(selectedTask.taskPromptInfos.length === 0) {
+            console.log("")
+        }
+
         setIsPrompting(true)
     }
+    console.log(selectedTask)
 
     return (
         <div>

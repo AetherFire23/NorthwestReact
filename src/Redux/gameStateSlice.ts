@@ -4,6 +4,7 @@ import {GameStateRead} from "./query/generated.ts";
 import * as shared from "../Redux/query/generated.ts"
 import * as gameStateExtensions from "../Hooks/gameStateHooks.tsx"
 import {first, removeElementById, removeSingle} from "../Utils/ListExtensions.tsx";
+import {Root} from "react-dom/client";
 
 export interface IGameStateSlice {
     currentSelectedRoomId: string
@@ -57,6 +58,7 @@ export const {updateGameStateSlice, swapItemOptimistically} = counterSlice.actio
 // Other code such as selectors can use the imported `RootState` type
 export const selectGameState = (state: RootState) => state.gameState.gameState
 export const selectVisibleTasks = (state: RootState) => state.gameState.gameState.visibleGameTasks
+export const selectPlayerId = (state: RootState) => state.gameState.gameState.playerUID
 export default counterSlice.reducer
 
 

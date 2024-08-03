@@ -8,6 +8,8 @@ import {produce} from "immer";
 import styled from "styled-components";
 import {FormState, IFormButtons, ITarget} from "./TargetSelectionPrompt-types.tsx";
 import {range} from "../../../../Utils/ListExtensions.tsx";
+import {useAppSelector} from "../../../../Redux/hooks.tsx";
+import {selectPlayerId} from "../../../../Redux/gameStateSlice.ts";
 
 const TargetSelectionDiv = styled.div`
     position: absolute;
@@ -44,85 +46,94 @@ export default function TargetSelectionPrompt({gameTaskResult}:
             <button
                 onClick={formButtons.previous}> Previous {formButtons.canGoToPrevious ? "can preivous" : "cannot previous"}</button>
             <button
-                onClick={() => formButtons.completeTask}> Complete: {formButtons.canCompleteTask ? "True" : "False"} </button>
+                onClick={() => formButtons.completeTask()}> Complete: {formButtons.canCompleteTask ? "True" : "False"} </button>
         </TargetSelectionDiv>
     )
 }
 
 // Transforms the selectedTask into objects that map well to visual components.
-// In other words, this transforms the DTO and backend data into frontend data.
-// TODO : implement mechanism to execute the task
+// In other words, this transforms the DTO and backend data into frontend components.
+// TODO : implement method to execute the task
 // dont forget the gameTaskResult needs to be stored in state in order to avoid null errors if the game state changes in the middle of a prompt
 function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
-    const [currentPromptsIndex, setCurrentScreenIndex] = useState(0);
-    const currentPrompt = selectedGameTaskResult.taskPromptInfos[currentPromptsIndex]
+    // ========== SETUP STATE ==========
+    const playerId = useAppSelector(selectPlayerId)
 
-    // First array is a screen, second is a list of targets
-    // Put empty arrays to avoid out of bounds
+    // Track the current screen index
+    const [screenIndex, setCurrentScreenIndex] = useState(0);
+
+    // Array of arrays to keep track of selected targets for each prompt
+    // Initialize with empty arrays to avoid out-of-bounds errors
     const [checkedTargets, setCheckedTargets] = useState<GameTaskTargetInfo[][]>(range(0, selectedGameTaskResult.taskPromptInfos.length)
-        .map(x => []))
-    const checksAtCurrentIndex = checkedTargets[currentPromptsIndex]
+        .map((_) => []))
 
+    // ========== DERIVED STATE ==========
+    const currentScreen = selectedGameTaskResult.taskPromptInfos[screenIndex]
+    const lastPromptIndex = selectedGameTaskResult.taskPromptInfos.length - 1
+    const checksAtCurrentIndex = checkedTargets[screenIndex]
+    const isMinimumReached = checksAtCurrentIndex.length >= currentScreen.minimumTargets!
+    const isMaximumReached = checksAtCurrentIndex.length === currentScreen.maximumTargets! - 1!
+    const isChecksWithinMinMaxBounds =
+        (checksAtCurrentIndex.length >= currentScreen.minimumTargets) &&
+        (checksAtCurrentIndex.length <= currentScreen.maximumTargets)
+    const hasNextScreen = screenIndex < lastPromptIndex
+    const canCompleteTask = isChecksWithinMinMaxBounds && (screenIndex === lastPromptIndex)
 
-    const isCheckedTarget = (target: GameTaskTargetInfo) => {
-        // requires target to actually have an Id.
-        const isChecked = checksAtCurrentIndex.some(x => x.id === target.id)
-        return isChecked
-    }
-    const onCheck = (target: GameTaskTargetInfo) => {
+    // ========== DERIVED STATE FUNCTIONS ==========
+    const isCheckedTarget = (target: GameTaskTargetInfo) =>
+        checksAtCurrentIndex.some(x => x.id === target.id)
+
+    // ========== FORM ACTIONS ==========
+    // Handle the check/uncheck action for a target
+    const handleCheck = (target: GameTaskTargetInfo) => {
         // remove the check if checked
         if (isCheckedTarget(target)) {
             setCheckedTargets(produce(checkedTargets, checkedTargetsDraft => {
-                // currently can only check/ uncheck by id, which would make the id prop absolutely mandatory
-                // checkedTargetsDraft[currentPromptsIndex] = checkedTargetsDraft[currentPromptsIndex].filter(x => x != draftCheckedItem) // remove an element
-                checkedTargetsDraft[currentPromptsIndex] = checkedTargetsDraft[currentPromptsIndex].filter(x => x.id != target.id) // remove an element
+                // currently can only check/ uncheck by id, which is currently making the id prop absolutely mandatory
+                // The reason is if the equality comparer is the reference, it would reset on every render
+                checkedTargetsDraft[screenIndex] = checkedTargetsDraft[screenIndex].filter(x => x.id != target.id) // remove an element
+            }))
+        } else {
+            setCheckedTargets(produce(checkedTargets, checkedTargetsDraft => {
+                checkedTargetsDraft[screenIndex].push(target)
             }))
         }
-        // add the check if NOT checked
-        else {
-            setCheckedTargets(produce(checkedTargets, draft => {
-                draft[currentPromptsIndex].push(target)
-            }))
+    }
+
+    console.log(playerId)
+
+    const [triggerExecuteTask, data] = usePutGameExecuteTaskMutation()
+    const completeGameTask = () => {
+        triggerExecuteTask(
+            {
+                taskCode: selectedGameTaskResult.gameTaskCode,
+                playerId: playerId,
+                body: checkedTargets
+            })
+    }
+
+    // ========== CREATE OBJECTS MAPPABLE TO REACTIVE COMPONENTS   ==========
+    return {
+        shownTargets: currentScreen.taskTargets.map(x => {
+            const target: ITarget = {
+                isChecked: isCheckedTarget(x),
+                onCheck: () => handleCheck(x),
+                name: x.appearanceName!,
+
+                // must not hide a currently selected target (not used yet)
+                isHidden: (isMaximumReached || isMinimumReached) && !isCheckedTarget(x),
+            }
+            return target
+        }),
+        formButtons: {
+            canGoToPrevious: screenIndex !== 0,
+            canSubmit: isChecksWithinMinMaxBounds && hasNextScreen,
+            canCompleteTask: canCompleteTask,
+            submit: () => setCurrentScreenIndex(screenIndex + 1),
+            previous: () => setCurrentScreenIndex(screenIndex - 1),
+            completeTask: completeGameTask
         }
     }
-
-    const isMinimumReached = checksAtCurrentIndex.length >= currentPrompt.minimumTargets!
-    const isMaximumReached = checksAtCurrentIndex.length === currentPrompt.maximumTargets! - 1!
-    // create current shown targets
-    const shownTargets: ITarget[] = currentPrompt.taskTargets.map(x => {
-        const target: ITarget = {
-            isChecked: isCheckedTarget(x),
-            onCheck: () => onCheck(x),
-            name: x.appearanceName!,
-
-            // must not hide a currently selected target (not used yet)
-            isHidden: (isMaximumReached || isMinimumReached) && !isCheckedTarget(x),
-        }
-        return target
-    })
-
-    const isChecksWithinMinMaxBounds =
-        (checksAtCurrentIndex.length >= currentPrompt.minimumTargets)
-        &&
-        (checksAtCurrentIndex.length <= currentPrompt.maximumTargets)
-    const hasNextScreen = currentPromptsIndex < selectedGameTaskResult.taskPromptInfos.length -1
-    const canCompleteTask = isChecksWithinMinMaxBounds && (currentPromptsIndex === selectedGameTaskResult.taskPromptInfos.length - 1)
-
-    const formButtons: IFormButtons = {
-        canGoToPrevious: currentPromptsIndex !== 0,
-        canSubmit: isChecksWithinMinMaxBounds && hasNextScreen,
-        canCompleteTask: canCompleteTask,
-        submit: () => setCurrentScreenIndex(currentPromptsIndex + 1),
-        previous: () => setCurrentScreenIndex(currentPromptsIndex - 1),
-        completeTask: () => console.log("task should complete")
-    }
-
-    const fState: FormState = {
-        shownTargets: shownTargets,
-        formButtons: formButtons,
-    }
-
-    return fState;
 }
 
 

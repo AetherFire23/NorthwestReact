@@ -1,10 +1,6 @@
 import styled from "styled-components"
-import {MenuSelections} from "../GameBar/GameBar.tsx";
 import {useState} from "react";
-import TaskCheckMark from "./TargetSelectionPrompt/TaskCheckMark.tsx";
 import {MainTasksPanel} from "./TasksPanelStuff/MainTasksPanel.tsx";
-import TargetSelectionPrompt from "./TargetSelectionPrompt/TargetSelectionPrompt.tsx";
-import {useSubmittedTasks} from "./useSubmittedTasksHook/useSubmittedTasks.tsx";
 import TargetSelectionPrompt2 from "./TargetSelectionPrompt/TargetSelectionPrompt2.tsx";
 import {useAppSelector} from "../../../Redux/hooks.tsx";
 
@@ -25,28 +21,31 @@ export default function MainTaskPanelFun2({closeMenu}: IGameTaskProps) {
     const [isPrompting, setIsPrompting] = useState(false)
     const visibleTasks = useAppSelector(x => x.gameState.gameState.visibleGameTasks)
     const [selectedTaskName, setSelectedTaskName] = useState(visibleTasks[0].gameTaskName);
-    const [selectedTask, setSelectedTask] = useState(visibleTasks.find(x => x.gameTaskName === selectedTaskName));
+
+    const initialTask = visibleTasks.find(x => x.gameTaskName === selectedTaskName)
+
+    if(!initialTask) throw new Error(" should have initial task or at least dummy task")
+    const [selectedTask, setSelectedTask] = useState(initialTask);
+
+
 
     // caching the task inside useState so that it doesnt change the prompts if the targets change mid-prompt
     if (selectedTaskName !== selectedTask.gameTaskName) {
-        setSelectedTask(visibleTasks.find(x => x.gameTaskName === selectedTaskName))
+        const nextTask =  visibleTasks.find(x => x.gameTaskName === selectedTaskName)
+        if(!nextTask)  throw new Error("Next selected task should have valid task name")
+        setSelectedTask(nextTask)
     }
 
     const startPrompting = () => {
-        if (!selectedTask!.canExecuteTask) console.log("cant execute")
-
-        if(selectedTask.taskPromptInfos.length === 0) {
-            console.log("")
-        }
+        if (!selectedTask!.canExecuteTask) return;
+        if(selectedTask.taskPromptInfos.length === 0) return;
 
         setIsPrompting(true)
     }
-    console.log(selectedTask)
 
     return (
         <div>
             {/*Will need a cancel task button one day*/}
-
             {/* Closes when prompting is open */}
             {(!isPrompting) && (
                 <MainTasksPanel
@@ -55,7 +54,6 @@ export default function MainTaskPanelFun2({closeMenu}: IGameTaskProps) {
                     setSelectedTask={setSelectedTaskName}
                     startPrompting={startPrompting}/>
             )}
-
             {(isPrompting) && (
                 <TargetSelectionPrompt2
                     gameTaskResult={selectedTask!}

@@ -4,11 +4,10 @@ import * as shared from "../Redux/query/generated.ts";
 export function getRoomItemsByName(gameState: shared.GameStateRead, roomName: string) {
     const room = gameState.rooms?.find(r => r.name === roomName);
 
-    if (!room) {
-        console.error("Invalid room name")
-    }
+    if (!room) throw new Error("Null room  ")
 
-    const items = room!.items ?? []
+    // I guess empty array if no items
+    const items = room.items ?? []
     return items
 }
 

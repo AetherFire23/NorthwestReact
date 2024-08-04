@@ -374,8 +374,8 @@ export type Player = {
   id?: string;
   currentGameRoomId?: string;
   profession?: RoleType;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
   z?: number;
   name?: string | null;
   healthPoints?: number;
@@ -389,8 +389,8 @@ export type PlayerRead = {
   id?: string;
   currentGameRoomId?: string;
   profession?: RoleType;
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
   z?: number;
   name?: string | null;
   healthPoints?: number;
@@ -491,16 +491,16 @@ export type TaskRequirement = {
   fulfillsRequirement?: boolean;
 };
 export type GameTaskTargetInfo = {
-  id?: string;
-  appearanceName?: string | null;
-  name?: string | null;
+  id: string;
+  appearanceName: string;
+  name: string;
 };
 export type GameTaskPromptInfo = {
   promptText?: string | null;
   hasTarget?: boolean;
   taskTargets: GameTaskTargetInfo[];
-  maximumTargets?: number;
-  minimumTargets?: number;
+  maximumTargets: number;
+  minimumTargets: number;
 };
 export type GameTaskAvailabilityResult = {
   gameTaskName: string;

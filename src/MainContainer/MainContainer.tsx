@@ -9,6 +9,7 @@ import CamChange from "./GameComponents/CamChange.tsx";
 import BackGroundImage from "./GameComponents/BackGroundImage.tsx";
 import Rooms from "./GameComponents/Rooms.tsx";
 import {useAutoLogin} from "./AutoLogin/useAutoLogin.tsx";
+import OtherPlayers from "./GameComponents/OtherPlayers.tsx";
 
 
 
@@ -56,6 +57,7 @@ export default function MainContainer() {
                     <CamChange/>
                     <BackGroundImage/>
                     <Rooms/>
+
                 </div>
             )}
         </div>

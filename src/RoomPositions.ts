@@ -7,9 +7,9 @@ export interface RoomInfo {
 const MiddleCorridor: RoomInfo = {
     name: "test",
     square: {
-        height: 130,
-        width: 300,
-        position: { x: 106, y: 534 },
+        height: 260,
+        width: 350,
+        position: { x: 50, y: 485 },
     }
 }
 export const rooms: RoomInfo[] = [

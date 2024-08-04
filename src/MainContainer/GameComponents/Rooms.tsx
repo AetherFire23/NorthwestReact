@@ -11,8 +11,8 @@ function Rooms() {
         <div style={{overflow: "hidden", width: "100%", height: "100%"}}>
             <ul>
                 {
-                    rooms && rooms.map(x => (
-                        <li key={x.name}>
+                    rooms && rooms.map((x, i) => (
+                        <li id={`room ${x.name} ${i} `} key={x.name}>
                             <Room room={x} />
                         </li>
                     ))
@@ -38,7 +38,7 @@ const RoomStyledDiv = styled.div<{ $square: Rectangle }>`
     top: ${({ $square }) => $square.position.y}px;
     width: ${({ $square }) => $square.width}px;
     height: ${({ $square }) => $square.height}px;
-    padding: 20px;
+    padding: 0px;
     position: absolute;
     /* background-color: aquamarine; */
     background-color: rgba(0, 217, 255, 0.603);

@@ -1,12 +1,12 @@
 import {
     GameTaskAvailabilityResult,
-    GameTaskAvailabilityResultRead, GameTaskCodes, GameTaskPromptInfo,
+    GameTaskAvailabilityResultRead,
     GameTaskTargetInfo, usePutGameExecuteTaskMutation
 } from "../../../../Redux/query/generated.ts";
 import React, {useState} from "react";
 import {produce} from "immer";
 import styled from "styled-components";
-import {FormState, IFormButtons, ITarget} from "./TargetSelectionPrompt-types.tsx";
+import {ITarget} from "./TargetSelectionPrompt-types.tsx";
 import {range} from "../../../../Utils/ListExtensions.tsx";
 import {useAppSelector} from "../../../../Redux/hooks.tsx";
 import {selectPlayerId} from "../../../../Redux/gameStateSlice.ts";
@@ -44,7 +44,7 @@ export default function TargetSelectionPrompt({gameTaskResult}:
 
             <button onClick={formButtons.submit}> Submit {formButtons.canSubmit ? "Can go to" : "cannot"} </button>
             <button
-                onClick={formButtons.previous}> Previous {formButtons.canGoToPrevious ? "can preivous" : "cannot previous"}</button>
+                onClick={formButtons.previous}> Previous {formButtons.canGoToPrevious ? "can previous" : "cannot previous"}</button>
             <button
                 onClick={() => formButtons.completeTask()}> Complete: {formButtons.canCompleteTask ? "True" : "False"} </button>
         </TargetSelectionDiv>
@@ -53,7 +53,6 @@ export default function TargetSelectionPrompt({gameTaskResult}:
 
 // Transforms the selectedTask into objects that map well to visual components.
 // In other words, this transforms the DTO and backend data into frontend components.
-// TODO : implement method to execute the task
 // dont forget the gameTaskResult needs to be stored in state in order to avoid null errors if the game state changes in the middle of a prompt
 function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
     // ========== SETUP STATE ==========
@@ -71,8 +70,8 @@ function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
     const currentScreen = selectedGameTaskResult.taskPromptInfos[screenIndex]
     const lastPromptIndex = selectedGameTaskResult.taskPromptInfos.length - 1
     const checksAtCurrentIndex = checkedTargets[screenIndex]
-    const isMinimumReached = checksAtCurrentIndex.length >= currentScreen.minimumTargets!
-    const isMaximumReached = checksAtCurrentIndex.length === currentScreen.maximumTargets! - 1!
+    const isMinimumReached = checksAtCurrentIndex.length >= currentScreen.minimumTargets
+    const isMaximumReached = checksAtCurrentIndex.length === currentScreen.maximumTargets - 1
     const isChecksWithinMinMaxBounds =
         (checksAtCurrentIndex.length >= currentScreen.minimumTargets) &&
         (checksAtCurrentIndex.length <= currentScreen.maximumTargets)
@@ -100,8 +99,6 @@ function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
         }
     }
 
-    console.log(playerId)
-
     const [triggerExecuteTask, data] = usePutGameExecuteTaskMutation()
     const completeGameTask = () => {
         triggerExecuteTask(
@@ -118,7 +115,7 @@ function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
             const target: ITarget = {
                 isChecked: isCheckedTarget(x),
                 onCheck: () => handleCheck(x),
-                name: x.appearanceName!,
+                name: x.appearanceName,
 
                 // must not hide a currently selected target (not used yet)
                 isHidden: (isMaximumReached || isMinimumReached) && !isCheckedTarget(x),

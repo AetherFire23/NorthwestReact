@@ -1,14 +1,12 @@
 import styled from 'styled-components'
-import {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import Chat from './Chat/Chat.tsx';
-import MainTaskPanelFun from '../Tasks/MainTaskPanelFun.tsx';
 import Inventory from './Inventory/Inventory.tsx';
-import {useAppDispatch, useAppSelector} from '../../../Redux/hooks.tsx';
+import { useAppSelector} from '../../../Redux/hooks.tsx';
 import {isValidObject} from '../../../Utils/nice.tsx';
-import {api} from '../../../Redux/query/generated.ts';
-import {updateGameStateSlice} from '../../../Redux/gameStateSlice.ts';
 import useGameStateRefresher from './GameStateRefresh/GameStateFetcher.tsx';
 import MainTaskPanelFun2 from '../Tasks/MainTaskPanelFun2.tsx';
+import OtherPlayers from "../OtherPlayers.tsx";
 
 const StyledBar = styled.div`
     background-color: black;
@@ -63,6 +61,7 @@ export default function GameBar({gameId}: {
                         <MenuButton txt='ship' onClick={() => setSelectedMenu("ship")}/>
                         <MenuButton txt='character' onClick={() => setSelectedMenu("chat")}/>
                     </StyledBar>
+                    <OtherPlayers/>
                 </div>
             )}
         </div>

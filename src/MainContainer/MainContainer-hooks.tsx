@@ -21,7 +21,7 @@ export function useMouseLog() {
 }
 
 // Does something on click and passes click information as event
-// lesson : you can apss anny additional dependencies through React.DependencyList
+// lesson : you can pass any additional dependencies through React.DependencyList
 export function useMouseEffect(clickHandler: (screenPosition: Vector, worldPosition: Vector) => void, deps?: React.DependencyList | undefined) {
     const {mouseToWorld} = useTransformations()
 

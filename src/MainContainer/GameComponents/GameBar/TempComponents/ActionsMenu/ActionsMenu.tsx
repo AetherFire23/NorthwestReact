@@ -18,6 +18,8 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                 width: "100vw",
                 height: "100vh",
                 backgroundColor: "black",
+                display: "flex",
+                flexDirection: "column"
             }}>
             <div
                 style={{

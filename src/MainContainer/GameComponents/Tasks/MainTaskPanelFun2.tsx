@@ -24,21 +24,20 @@ export default function MainTaskPanelFun2({closeMenu}: IGameTaskProps) {
 
     const initialTask = visibleTasks.find(x => x.gameTaskName === selectedTaskName)
 
-    if(!initialTask) throw new Error(" should have initial task or at least dummy task")
+    if (!initialTask) throw new Error(" should have initial task or at least dummy task")
     const [selectedTask, setSelectedTask] = useState(initialTask);
 
-
-
     // caching the task inside useState so that it doesnt change the prompts if the targets change mid-prompt
+    // taskName changes, then we update the Real Task
     if (selectedTaskName !== selectedTask.gameTaskName) {
-        const nextTask =  visibleTasks.find(x => x.gameTaskName === selectedTaskName)
-        if(!nextTask)  throw new Error("Next selected task should have valid task name")
+        const nextTask = visibleTasks.find(x => x.gameTaskName === selectedTaskName)
+        if (!nextTask) throw new Error("Next selected task should have valid task name")
         setSelectedTask(nextTask)
     }
 
     const startPrompting = () => {
         if (!selectedTask!.canExecuteTask) return;
-        if(selectedTask.taskPromptInfos.length === 0) return;
+        if (selectedTask.taskPromptInfos.length === 0) return;
 
         setIsPrompting(true)
     }

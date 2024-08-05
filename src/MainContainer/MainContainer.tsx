@@ -10,6 +10,7 @@ import BackGroundImage from "./GameComponents/BackGroundImage.tsx";
 import Rooms from "./GameComponents/Rooms.tsx";
 import {useAutoLogin} from "./AutoLogin/useAutoLogin.tsx";
 import OtherPlayers from "./GameComponents/OtherPlayers.tsx";
+import GameBar2 from "./GameComponents/GameBar/GameBar2.tsx";
 
 
 
@@ -52,7 +53,8 @@ export default function MainContainer() {
             )}
             {(isLoggedIn && gameId) && (
                 <div>
-                    <GameBar gameId={gameId}/>
+                    {/*<GameBar gameId={gameId}/>*/}
+                    <GameBar2 gameId={gameId}/>
                     <LocalPlayer/>
                     <CamChange/>
                     <BackGroundImage/>

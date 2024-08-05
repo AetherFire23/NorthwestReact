@@ -89,7 +89,8 @@ export function MainTasksPanel({ startPrompting, closeMenu, selectedTask, setSel
                 width: "5rem",
                 height: "2rem",
                 left: "35rem",
-                top: "1rem"
+                top: "1rem",
+
             }}>
                 Execute Task
             </div>

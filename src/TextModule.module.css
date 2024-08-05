@@ -1,0 +1,13 @@
+/*warnign : cannot put dashes inside of css styles*/
+
+.pixelfont {
+    font-family: "Pixel";
+}
+
+.pixelselectable {
+    font-family: "Pixel";
+}
+
+.pixelselectable:hover {
+    color: rgba(200,200,200, 0.5); /* Color on hover */
+}

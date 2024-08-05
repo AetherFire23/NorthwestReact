@@ -412,7 +412,7 @@ export type Log = {
   roomId?: string;
   isPublic?: boolean;
   eventText?: string | null;
-  created?: string | null;
+  created: string;
   createdBy?: string | null;
 };
 export type RoomType = "Start" | "Second";

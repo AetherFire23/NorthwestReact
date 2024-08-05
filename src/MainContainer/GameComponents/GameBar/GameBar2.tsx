@@ -5,6 +5,7 @@ import {isValidObject} from '../../../Utils/nice.tsx';
 import useGameStateRefresher from './GameStateRefresh/GameStateFetcher.tsx';
 import ChatLogMenu from "./TempComponents/ChatLogMenu/ChatLogMenu.tsx";
 import ActionsMenu from "./TempComponents/ActionsMenu/ActionsMenu.tsx";
+import OtherPlayers from "../OtherPlayers.tsx";
 
 const MenuButtonDiv2 = styled.div<{ $iconUrl: string, $marginProps: { bottom: string, top: string } }>`
     background-image: url(${({$iconUrl}) => $iconUrl});
@@ -34,12 +35,14 @@ export default function GameBar2({gameId}: {
         <div>
             {isValidObject(gameState) && (
                 <>
-                    <div style={{
+                    <div
+                        style={{
                         position: "absolute",
                         width: "100vw",
                         height: "100vh",
                     }}>
-                        <div style={{
+                        <div
+                            style={{
                             height: "50%",
                             display: "flex",
                             justifyContent: "space-evenly",
@@ -52,7 +55,8 @@ export default function GameBar2({gameId}: {
                                     top: "2rem"
                                 }}
                             />
-                            <div style={{
+                            <div
+                                style={{
                                 marginLeft: "12rem",
                                 marginRight: "12rem",
 
@@ -66,7 +70,8 @@ export default function GameBar2({gameId}: {
                                 }}
                             />
                         </div>
-                        <div style={{
+                        <div
+                            style={{
                             height: "50%",
                             display: "flex",
                             justifyContent: "space-evenly",
@@ -80,7 +85,8 @@ export default function GameBar2({gameId}: {
                                 }}
                             />
                             {/*div to space more */}
-                            <div style={{
+                            <div
+                                style={{
                                 marginLeft: "12rem",
                                 marginRight: "12rem",
 
@@ -106,7 +112,7 @@ export default function GameBar2({gameId}: {
                         <ActionsMenu closeMenu={closeMenu}/>
                     )}
 
-
+                    <OtherPlayers/>
                     {/*/!* <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/> *!/*/}
                     {/*{selectedMenu === "tasks" && (*/}
                     {/*    <MainTaskPanelFun2 closeMenu={closeMenu}/>*/}

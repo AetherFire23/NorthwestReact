@@ -15,6 +15,7 @@ const ImageDiv = styled.div<{ $xOffset: number, $yOffset: number }>`
     height: 100vh;
     position: absolute;
     z-index: -10;
+    userSelect: none;
 `;
 
 function BackGroundImage() {

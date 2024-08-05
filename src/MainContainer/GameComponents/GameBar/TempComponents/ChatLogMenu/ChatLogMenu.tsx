@@ -33,6 +33,7 @@ export default function ChatLogMenu({closeMenu}: IChatLogProps) {
                     onClick={() => setSubMenu("Chat")}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "3rem",
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
@@ -45,6 +46,7 @@ export default function ChatLogMenu({closeMenu}: IChatLogProps) {
                     onClick={() => setSubMenu("Log")}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "3rem",
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
@@ -55,6 +57,7 @@ export default function ChatLogMenu({closeMenu}: IChatLogProps) {
                     onClick={closeMenu}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "4rem",
                     }}>
                     X

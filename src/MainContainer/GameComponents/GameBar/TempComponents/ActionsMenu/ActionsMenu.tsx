@@ -1,6 +1,7 @@
 import styles from "../../../../../TextModule.module.css";
 import {useState} from "react";
-import TaskSubMenu from "./TaskSubMenu.tsx";
+import TaskSubMenu from "./TaskSubMenu/TaskSubMenu.tsx";
+
 interface IChatLogProps {
     closeMenu: () => void,
 }
@@ -20,6 +21,9 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                 backgroundColor: "black",
                 display: "flex",
                 flexDirection: "column"
+                // For some reason, without display column, there is a bug in the parent's height
+                // which becomes always 100% of view height.
+
             }}>
             <div
                 style={{
@@ -29,11 +33,13 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                     display: "flex",
                     justifyContent: "space-evenly",
                     alignItems: "center",
+
                 }}>
                 <div
                     onClick={() => setSubMenu("Tasks")}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "3rem",
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
@@ -47,6 +53,7 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                     onClick={() => setSubMenu("Environment")}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "3rem",
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
@@ -57,15 +64,31 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                     onClick={closeMenu}
                     className={styles.pixelselectable}
                     style={{
+                        userSelect: "none",
                         fontSize: "4rem",
                     }}>
                     X
                 </div>
 
             </div>
-            {subMenu === "Tasks" && (
-                <TaskSubMenu/>
-            )}
+
+            {/*Overflow hidden seems to be needed */}
+            <div
+                style={{
+                    flex: "1",
+                }}
+            >
+                {subMenu === "Tasks" && (
+                    <TaskSubMenu/>
+                )}
+            </div>
+
+            {/*{subMenu === "Environment" && (*/}
+            {/*    <div>*/}
+
+            {/*    </div>*/}
+            {/*)}*/}
+
         </div>
     )
 }

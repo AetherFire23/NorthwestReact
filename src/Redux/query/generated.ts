@@ -487,8 +487,8 @@ export type GameTaskCodes =
   | "TestTaskNoTargets"
   | "TestTaskWithTargets";
 export type TaskRequirement = {
-  description?: string | null;
-  fulfillsRequirement?: boolean;
+  description: string;
+  fulfillsRequirement: boolean;
 };
 export type GameTaskTargetInfo = {
   id: string;

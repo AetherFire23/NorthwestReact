@@ -23,13 +23,12 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                 flexDirection: "column"
                 // For some reason, without display column, there is a bug in the parent's height
                 // which becomes always 100% of view height.
-
             }}>
             <div
                 style={{
                     width: "100%",
                     height: "15%",
-                    backgroundColor: "snow",
+                    backgroundColor: "white",
                     display: "flex",
                     justifyContent: "space-evenly",
                     alignItems: "center",

@@ -37,16 +37,16 @@ export default function GameBar2({gameId}: {
                 <>
                     <div
                         style={{
-                        position: "absolute",
-                        width: "100vw",
-                        height: "100vh",
-                    }}>
+                            position: "absolute",
+                            width: "100vw",
+                            height: "100vh",
+                        }}>
                         <div
                             style={{
-                            height: "50%",
-                            display: "flex",
-                            justifyContent: "space-evenly",
-                        }}>
+                                height: "50%",
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                            }}>
                             <MenuButtonDiv2
                                 onClick={(e) => setMenuNoProp("logchat", e)}
                                 $iconUrl={"src/assets/Chatlog.png"}
@@ -57,10 +57,10 @@ export default function GameBar2({gameId}: {
                             />
                             <div
                                 style={{
-                                marginLeft: "12rem",
-                                marginRight: "12rem",
+                                    marginLeft: "12rem",
+                                    marginRight: "12rem",
 
-                            }}/>
+                                }}/>
                             <MenuButtonDiv2
                                 onClick={(e) => setMenuNoProp("actions", e)}
                                 $iconUrl={"src/assets/actions.png"}
@@ -72,11 +72,11 @@ export default function GameBar2({gameId}: {
                         </div>
                         <div
                             style={{
-                            height: "50%",
-                            display: "flex",
-                            justifyContent: "space-evenly",
-                            alignItems: "flex-end" // Aligns children at the bottom of the container
-                        }}>
+                                height: "50%",
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                                alignItems: "flex-end" // Aligns children at the bottom of the container
+                            }}>
                             <MenuButtonDiv2
                                 $iconUrl={"src/assets/character.png"}
                                 $marginProps={{
@@ -87,10 +87,10 @@ export default function GameBar2({gameId}: {
                             {/*div to space more */}
                             <div
                                 style={{
-                                marginLeft: "12rem",
-                                marginRight: "12rem",
+                                    marginLeft: "12rem",
+                                    marginRight: "12rem",
 
-                            }}/>
+                                }}/>
                             <MenuButtonDiv2
                                 $iconUrl={"src/assets/character.png"}
                                 $marginProps={{

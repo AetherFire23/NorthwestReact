@@ -1,19 +1,26 @@
 .html {
-  margin: 0
+    margin: 0
 }
-body{
-  margin: 0rem;
-  font-family: 'Pixel', sans-serif;
+
+body {
+    margin: 0rem;
+    font-family: 'Pixel', sans-serif;
+    cursor: url("src/assets/cursor.png"), auto;
 }
+
 ul {
-  list-style: none;
+    list-style: none;
 }
+
+div {
+}
+
 @font-face {
-  font-family: "Pixel";
-  src: url("src/assets/pixelint.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap; /* Improves performance by using fallback fonts until the custom font loads */
+    font-family: "Pixel";
+    src: url("src/assets/pixelint.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* Improves performance by using fallback fonts until the custom font loads */
 }
 
 

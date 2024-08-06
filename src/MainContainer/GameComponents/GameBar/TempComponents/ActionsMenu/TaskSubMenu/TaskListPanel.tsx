@@ -1,4 +1,5 @@
 import {GameTaskAvailabilityResultRead} from "../../../../../../Redux/query/generated.ts";
+import styles from "../../../../../../../src/TextModule.module.css"
 
 interface TaskListPanelProps {
     startPrompting: () => void,
@@ -13,7 +14,6 @@ export default function TaskListPanel({
                                           setSelectedTask,
                                           visibleTasks
                                       }: TaskListPanelProps) {
-
     return (
         <ul style={{
             marginLeft: "0",
@@ -23,14 +23,19 @@ export default function TaskListPanel({
             {visibleTasks.map(task => (
                 /* Task element */
                 <li
+                    className={styles.pixelSelectableWhite}
                     id={task.gameTaskCode}
                     onClick={() => setSelectedTask(task.gameTaskName)}
                     style={{
                         fontSize: "2rem",
-                        color: "white",
+                        userSelect: "none",
+
                     }}
                 >
                     {task.gameTaskName}
+
+                    {/*Puts an arrow besides the task that is currently selected*/}
+                    {selectedTask?.gameTaskName === task.gameTaskName ? " <-" : ""}
                 </li>
             ))}
         </ul>

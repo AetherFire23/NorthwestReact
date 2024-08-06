@@ -1,10 +1,7 @@
 import {Provider} from "react-redux";
 import {store} from "./Redux/store";
 import React, {useEffect, useState} from "react";
-import {getMousePosition, useTransformations} from "./Utils/nice";
-import {Vector} from "./MainContainer/GameComponents/Models/Vector.ts";
 import MainContainer from "./MainContainer/MainContainer.tsx";
-
 export default function App() {
     return (
         <div style={{

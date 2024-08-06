@@ -9,5 +9,18 @@
 }
 
 .pixelselectable:hover {
-    color: rgba(200,200,200, 0.5); /* Color on hover */
+    color: rgba(126, 137, 184, 1); /* Color on hover */
 }
+
+.pixelSelectableWhite {
+    font-family: "Pixel";
+    color: white ;
+}
+
+.pixelSelectableWhite:hover {
+    color: rgba(126, 137, 184, 1); /* Color on hover */
+}
+
+
+/*Nice accent ? */
+/*adbcff*/

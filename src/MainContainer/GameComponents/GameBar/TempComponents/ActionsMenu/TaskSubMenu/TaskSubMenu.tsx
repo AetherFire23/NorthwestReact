@@ -1,8 +1,16 @@
 import {useState} from "react";
 import {useAppSelector} from "../../../../../../Redux/hooks.tsx";
-import {selectVisibleTasks} from "../../../../../../Redux/gameStateSlice.ts";
 import TaskListPanel from "./TaskListPanel.tsx";
 import styles from "../../../../../../TextModule.module.css";
+import {
+    GameTaskAvailabilityResult,
+    GameTaskAvailabilityResultRead,
+    GameTaskTargetInfo, usePutGameExecuteTaskMutation
+} from "../../../../../../Redux/query/generated.ts";
+import {selectPlayerId} from "../../../../../../Redux/gameStateSlice.ts";
+import {range} from "../../../../../../Utils/ListExtensions.tsx";
+import {produce} from "immer";
+import {ITarget} from "../../../../Tasks/TargetSelectionPrompt/TargetSelectionPrompt-types.tsx";
 
 export default function TaskSubMenu() {
     const [isPrompting, setIsPrompting] = useState(false)
@@ -30,15 +38,47 @@ export default function TaskSubMenu() {
         setIsPrompting(true)
     }
 
+    const stopPrompting = () => setIsPrompting(false)
 
     return (
         <div
             style={{
                 height: "100%",
-                backgroundColor: "red"
+                backgroundColor: "black"
             }}
         >
+            {/*// ON MOBILE THEY WILL  HIT EXECUTE if it is on the top*/ }
+            {/* COLOR for tabs*/}
+            {/* make a single panel for requirements ,effects to allow for more info to be added later */}
 
+            <div
+                style={{
+                    height: "1rem",
+                }}
+            />
+            {/*Execute Button*/}
+            <div
+                style={{
+                    display: "flex",
+                    height: "15%",
+                    backgroundColor: "green",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+
+
+                <label
+                    onClick={startPrompting}
+                    className={styles.pixelselectable}
+                    style={{
+                        fontSize: "200%",
+                    }}
+                >
+                    Execute
+                </label>
+            </div>
+            {/*Screen show if prompting */}
             {!isPrompting && (
                 <div
                     style={{
@@ -47,6 +87,14 @@ export default function TaskSubMenu() {
                         flexDirection: "row"
                     }}
                 >
+                    <div
+                        style={{
+                            backgroundColor: "green",
+                        }}
+                    >
+
+                    </div>
+
 
                     <div
                         id={"tasks-list"}
@@ -58,29 +106,7 @@ export default function TaskSubMenu() {
                         }}
                     >
 
-                        {/*Execute Button*/}
-                        <div
-                            style={{
-                                display: "flex",
-                                height: "15%",
-                                backgroundColor: "green",
-                                justifyContent: "center",
-                                alignItems: "center"
-                            }}
-                        >
-
-                            <label
-                                className={styles.pixelselectable}
-                                style={{
-                                    fontSize: "200%",
-                                }}
-                            >
-                                Execute
-                            </label>
-                        </div>
-
                         <TaskListPanel
-
                             visibleTasks={visibleTasks}
                             selectedTask={selectedTask}
                             setSelectedTask={setSelectedTaskName}
@@ -88,22 +114,22 @@ export default function TaskSubMenu() {
                         />
                     </div>
 
-
                     {/*Requirements */}
                     <div
                         style={{
                             height: "100%",
                             width: "50%",
-                            backgroundColor: "violet",
+                            backgroundColor: "white",
                             display: "flex",
                             flexDirection: "column"
+
                         }}
                     >
                         <div
                             style={{
                                 width: "100%",
                                 height: "50%",
-                                backgroundColor: "blanchedalmond"
+                                backgroundColor: "black"
                             }}
                         >
                             <ul
@@ -112,19 +138,20 @@ export default function TaskSubMenu() {
                                     padding: "0",
                                 }}
                             >
-                                {selectedTask.requirements.map(x => (
+                                {/* will need to think about scrolling */}
+                                {selectedTask.requirements.map((x, i) => (
                                     <li
                                         id={x.description}
                                         style={{
                                             fontSize: "1.5rem",
+                                            color: "white",
+
                                         }}
                                     >
-                                        {x.description}
-
+                                        {i + x.description}
                                     </li>
                                 ))}
                             </ul>
-
                         </div>
 
                         {/*Effects */}
@@ -132,23 +159,194 @@ export default function TaskSubMenu() {
                             style={{
                                 width: "100%",
                                 height: "50%",
-                                backgroundColor: "darkslateblue"
+                                backgroundColor: "black"
                             }}
                         >
-                            2
+                            <ul
+                                style={{
+                                    margin: "0",
+                                    color: "white"
+                                }}
+                            >
+                                - not available -
+                            </ul>
                         </div>
-
                     </div>
+                </div>
+            )}
+
+            {isPrompting && (
+                <div
+                    style={{
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "row"
+                    }}
+                >
+                    <PromptScreen
+                        gameTaskResult={selectedTask}
+                        closePrompt={stopPrompting}
+                    />
                 </div>
             )}
         </div>
     )
 }
 
-function TaskPrompt() {
+interface IPromptScreen {
+    gameTaskResult: GameTaskAvailabilityResultRead,
+    closePrompt: () => void
+}
+
+function PromptScreen({gameTaskResult, closePrompt}: IPromptScreen) {
+    const {shownTargets, formButtons} = useTargetPrompt(gameTaskResult)
+
+    const onTaskComplete = () => {
+        closePrompt()
+        formButtons.completeTask()
+    }
     return (
-        <div>
-            <label> Prompt </label>
+        <div
+            style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column"
+            }}
+        >
+            <ul
+                style={{
+                    margin: "0",
+                    padding: "0",
+                }}
+            >
+                {shownTargets.map((task) => (
+                    <li
+                        onClick={task.onCheck}
+                        className={styles.pixelSelectableWhite}
+                        style={{
+                            color: task.isChecked ? "green" : "",
+                            fontSize: "2rem"
+                        }}
+                    >
+                        {task.name}
+                    </li>
+                ))}
+            </ul>
+            <label
+                onClick={formButtons.previous}
+                className={styles.pixelSelectableWhite}
+                style={{
+                    visibility: formButtons.canGoToPrevious ? "visible" : "hidden",
+
+                }}
+            >
+                Previous
+            </label>
+            <label
+                onClick={formButtons.submit}
+                className={styles.pixelSelectableWhite}
+                style={{
+                    visibility: formButtons.canSubmit ? "visible" : "hidden",
+                }}
+            >
+                Next
+            </label>
+            <label
+                onClick={onTaskComplete}
+                className={styles.pixelSelectableWhite}
+                style={{
+                    visibility: formButtons.canCompleteTask ? "visible" : "hidden",
+                    color: "white",
+                }}
+            >
+                Execute
+            </label>
+            <label
+                onClick={closePrompt}
+                className={styles.pixelSelectableWhite}
+                style={{}}
+            > Cancel Task </label>
         </div>
     )
 }
+
+function useTargetPrompt(selectedGameTaskResult: GameTaskAvailabilityResult) {
+    // ========== SETUP STATE ==========
+    const playerId = useAppSelector(selectPlayerId)
+
+    // Track the current screen index
+    const [screenIndex, setCurrentScreenIndex] = useState(0);
+
+    // Array of arrays to keep track of selected targets for each prompt
+    // Initialize with empty arrays to avoid out-of-bounds errors
+    const [checkedTargets, setCheckedTargets] = useState<GameTaskTargetInfo[][]>(range(0, selectedGameTaskResult.taskPromptInfos.length)
+        .map((_) => []))
+
+    // ========== DERIVED STATE ==========
+    const currentScreen = selectedGameTaskResult.taskPromptInfos[screenIndex]
+    const lastPromptIndex = selectedGameTaskResult.taskPromptInfos.length - 1
+    const checksAtCurrentIndex = checkedTargets[screenIndex]
+    const isMinimumReached = checksAtCurrentIndex.length >= currentScreen.minimumTargets
+    const isMaximumReached = checksAtCurrentIndex.length === currentScreen.maximumTargets - 1
+    const isChecksWithinMinMaxBounds =
+        (checksAtCurrentIndex.length >= currentScreen.minimumTargets) &&
+        (checksAtCurrentIndex.length <= currentScreen.maximumTargets)
+    const hasNextScreen = screenIndex < lastPromptIndex
+    const canCompleteTask = isChecksWithinMinMaxBounds && (screenIndex === lastPromptIndex)
+
+    // ========== DERIVED STATE FUNCTIONS ==========
+    const isCheckedTarget = (target: GameTaskTargetInfo) =>
+        checksAtCurrentIndex.some(x => x.id === target.id)
+
+    // ========== FORM ACTIONS ==========
+    // Handle the check/uncheck action for a target
+    const handleCheck = (target: GameTaskTargetInfo) => {
+        // remove the check if checked
+        if (isCheckedTarget(target)) {
+            setCheckedTargets(produce(checkedTargets, checkedTargetsDraft => {
+                // currently can only check/ uncheck by id, which is currently making the id prop absolutely mandatory
+                // The reason is if the equality comparer is the reference, it would reset on every render
+                checkedTargetsDraft[screenIndex] = checkedTargetsDraft[screenIndex].filter(x => x.id != target.id) // remove an element
+            }))
+        } else {
+            setCheckedTargets(produce(checkedTargets, checkedTargetsDraft => {
+                checkedTargetsDraft[screenIndex].push(target)
+            }))
+        }
+    }
+
+    const [triggerExecuteTask, data] = usePutGameExecuteTaskMutation()
+    const completeGameTask = () => {
+        triggerExecuteTask(
+            {
+                taskCode: selectedGameTaskResult.gameTaskCode,
+                playerId: playerId,
+                body: checkedTargets
+            })
+    }
+
+    // ========== CREATE OBJECTS MAPPABLE TO REACTIVE COMPONENTS   ==========
+    return {
+        shownTargets: currentScreen.taskTargets.map(x => {
+            const target: ITarget = {
+                isChecked: isCheckedTarget(x),
+                onCheck: () => handleCheck(x),
+                name: x.appearanceName,
+
+                // must not hide a currently selected target (not used yet)
+                isHidden: (isMaximumReached || isMinimumReached) && !isCheckedTarget(x),
+            }
+            return target
+        }),
+        formButtons: {
+            canGoToPrevious: screenIndex !== 0,
+            canSubmit: isChecksWithinMinMaxBounds && hasNextScreen,
+            canCompleteTask: canCompleteTask,
+            submit: () => setCurrentScreenIndex(screenIndex + 1),
+            previous: () => setCurrentScreenIndex(screenIndex - 1),
+            completeTask: completeGameTask
+        }
+    }
+}
+
+const stylesTest = StyleSheet

@@ -6,6 +6,9 @@ import useGameStateRefresher from './GameStateRefresh/GameStateFetcher.tsx';
 import ChatLogMenu from "./TempComponents/ChatLogMenu/ChatLogMenu.tsx";
 import ActionsMenu from "./TempComponents/ActionsMenu/ActionsMenu.tsx";
 import OtherPlayers from "../OtherPlayers.tsx";
+import CharacterMenu from "./TempComponents/CharacterMenu/CharacterMenu.tsx";
+
+
 
 const MenuButtonDiv2 = styled.div<{ $iconUrl: string, $marginProps: { bottom: string, top: string } }>`
     background-image: url(${({$iconUrl}) => $iconUrl});
@@ -78,6 +81,7 @@ export default function GameBar2({gameId}: {
                                 alignItems: "flex-end" // Aligns children at the bottom of the container
                             }}>
                             <MenuButtonDiv2
+                                onClick={(e) => setMenuNoProp("character", e)}
                                 $iconUrl={"src/assets/character.png"}
                                 $marginProps={{
                                     bottom: "2rem",
@@ -111,7 +115,11 @@ export default function GameBar2({gameId}: {
                     {selectedMenu === "actions" && (
                         <ActionsMenu closeMenu={closeMenu}/>
                     )}
+                    {selectedMenu === "character" && (
+                        <CharacterMenu closeMenu={closeMenu}/>
+                    )}
 
+                    {/* reason I put most stuff in gamebar is I know gamesate is initialized here */}
                     <OtherPlayers/>
                     {/*/!* <Logs selectedMenu={selectedMenu} closeMenu={closeMenu}/> *!/*/}
                     {/*{selectedMenu === "tasks" && (*/}

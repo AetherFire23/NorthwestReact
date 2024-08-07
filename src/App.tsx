@@ -2,6 +2,7 @@ import {Provider} from "react-redux";
 import {store} from "./Redux/store";
 import React, {useEffect, useState} from "react";
 import MainContainer from "./MainContainer/MainContainer.tsx";
+
 export default function App() {
     return (
         <div style={{

@@ -1,17 +1,17 @@
 import styles from "../../../../../TextModule.module.css";
+import TaskSubMenu from "../ActionsMenu/TaskSubMenu/TaskSubMenu.tsx";
 import {useState} from "react";
-import TaskSubMenu from "./TaskSubMenu/TaskSubMenu.tsx";
+import InventorySubMenu from "./InventorySubmenu/InventorySubMenu.tsx";
 
-interface IChatLogProps {
+interface ICharacterMenuProps {
     closeMenu: () => void,
 }
 
-type SubMenus = "Tasks" | "Environment"
-export default function ActionsMenu({closeMenu}: IChatLogProps) {
-    const [subMenu, setSubMenu] = useState<SubMenus>("Tasks")
+type SubMenus = "Inventory" | "Character"
+export default function CharacterMenu({closeMenu} : ICharacterMenuProps){
+    const [subMenu, setSubMenu] = useState<SubMenus>("Inventory")
 
     return (
-
         <div
             onClick={e => e.stopPropagation()}
             style={{
@@ -35,7 +35,7 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
 
                 }}>
                 <div
-                    onClick={() => setSubMenu("Tasks")}
+                    onClick={() => setSubMenu("Inventory")}
                     className={styles.pixelselectable}
                     style={{
                         userSelect: "none",
@@ -43,13 +43,12 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
                     }}>
-                    Tasks
-
+                    Inventory
                 </div>
 
 
                 <div
-                    onClick={() => setSubMenu("Environment")}
+                    onClick={() => setSubMenu("Character")}
                     className={styles.pixelselectable}
                     style={{
                         userSelect: "none",
@@ -57,7 +56,7 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
                         fontWeight: "bold",
                         letterSpacing: "0.1em",
                     }}>
-                    Environment
+                    Character
                 </div>
                 <div
                     onClick={closeMenu}
@@ -71,15 +70,19 @@ export default function ActionsMenu({closeMenu}: IChatLogProps) {
 
             </div>
 
+            {/*Overflow hidden seems to be needed */}
             <div
                 style={{
                     flex: "1",
                 }}
             >
-                {subMenu === "Tasks" && (
-                    <TaskSubMenu/>
+                {subMenu === "Inventory" && (
+                    <InventorySubMenu/>
                 )}
-            {/*    Add submenu here I think */}
+                {/*{subMenu === "Character" && (*/}
+                {/*    <TaskSubMenu/>*/}
+                {/*)}*/}
+                {/*    Add submenu here I think */}
             </div>
 
             {/*{subMenu === "Environment" && (*/}

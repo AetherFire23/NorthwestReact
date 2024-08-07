@@ -37,7 +37,10 @@ export default function TaskListPanel({
                     {/*Puts an arrow besides the task that is currently selected*/}
                     {selectedTask?.gameTaskName === task.gameTaskName ? " <-" : ""}
                 </li>
+
+
             ))}
+
         </ul>
     )
 }

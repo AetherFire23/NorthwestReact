@@ -1,7 +1,7 @@
 import {useEffect} from "react";
-import {useAppDispatch, useAppSelector} from "../../../../Redux/hooks";
-import {api} from "../../../../Redux/query/generated";
-import {updateGameStateSlice} from "../../../../Redux/gameStateSlice";
+import {useAppDispatch, useAppSelector} from "@src/Redux/hooks.tsx";
+import {api} from "@src/Redux/query/generated";
+import {updateGameStateSlice} from "@src/Redux/gameStateSlice";
 
 export default function useGameStateRefresher(gameId: string) {
     const dispatch = useAppDispatch()
